@@ -67,10 +67,10 @@ Audited from GitHub, decided by contents rather than by name.
 
 | Source repo | What's in it | Decision |
 |---|---|---|
-| `Physics-simulations/Cristal_multicapa` | matrix method, multilayer | **done** → [`tmm/`](tmm/) |
+| [`Physics-simulations/Cristal_multicapa`](https://github.com/FullFran/Physics-simulations) | matrix method, multilayer | **done** → [`tmm/`](tmm/) · source archived |
 | `Physics-simulations/Iter_rad_material` | `rayosnew.py`, `unfoton.py` — photon transport by ray tracing | queued — feeds the same intuition as `snow-mcrt` |
 | `Physics-simulations/Magnetic Mirrors` | charged particle in a magnetic bottle | queued — Boris pusher from the Lorentz force |
-| `Point_classifier` | `redNumpy.ipynb`, net in pure NumPy | next — MLP from backprop |
+| [`Point_classifier`](https://github.com/FullFran/Point_classifier) | `redNumpy.ipynb`, net in pure NumPy | next — MLP from backprop · already archived |
 | `Tema-3-...alta-dimensionalidad` + `Optimization-Algorithms/3` | simulated annealing, genetic, TSP — duplicated across two repos | merge into one entry |
 | `minimalRandEM` | random-media EM, MATLAB | open it, then decide |
 | `Physics-Informed-ML` | `Theory/` + `Examples/` | take the shape, not the content |
@@ -79,8 +79,10 @@ Audited from GitHub, decided by contents rather than by name.
 | `llm-from-scratch` | `clases/`, `examenes/`, `notas/` | study vault; mine `experiments/` only |
 | `computational_photonics` | died at `1_slab_waveguides` | nothing to rescue |
 
-Migration is only finished when the source repo is archived on GitHub.
-Otherwise the count of scattered repos goes up, not down.
+Migration is only finished when the source repo is archived on GitHub **and**
+carries a README pointing here. An archived repo with broken code and no
+signpost is a trap, not an archive. Otherwise the count of scattered repos
+goes up, not down.
 
 ## Not in here
 
