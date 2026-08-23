@@ -1,0 +1,13 @@
+[project]
+name = "first-principles"
+version = "0"
+description = "Minimal implementations, rebuilt from the equations."
+requires-python = ">=3.11"
+dependencies = ["numpy>=2.0", "matplotlib>=3.8"]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+# Not a package. This repo is read, not installed.
+[tool.uv]
+package = false
