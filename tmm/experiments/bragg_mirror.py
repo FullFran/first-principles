@@ -21,7 +21,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from core import RT
+from solve import RT
 
 DESIGN = 550.0
 N_AIR, N_HIGH, N_LOW, N_SUB = 1.0, 2.3, 1.45, 1.52

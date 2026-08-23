@@ -26,6 +26,10 @@ each, or they stay archived where they are.
    pedagogical model stops is the point.
 6. **This repo is never a dependency.** It gets read, not imported. Real
    projects reimplement properly.
+7. **The domain does not import the method.** The equations live in one file
+   that knows no algorithm; the algorithms live beside it and depend on it,
+   never the reverse. Enforced by a contract suite every method must pass —
+   without that, the folders are decoration.
 
 ## Map
 
@@ -44,10 +48,19 @@ A row only gets a mark when it is true today, not when it once was.
 ```
 tmm/
 ├── README.md        the five questions, derivation included
-├── core.py          the mechanism, nothing else
+├── physics.py       the domain: the equations, and nothing that solves them
+├── methods/         one file per algorithm, each importing the domain
+├── solve.py         orchestration: validate, dispatch, convert
 ├── experiments/     things I ran and what they showed
-└── tests/           properties the physics guarantees
+└── tests/           domain laws, plus a contract every method must pass
 ```
+
+Small entries collapse `methods/` into a single file. The rule that survives
+either way is the direction of the arrow: **the equations never import the
+algorithm.** The payoff is concrete — swap the algorithm, and every physical
+law has to keep holding. If it does, you have separated what nature does from
+how you chose to compute it. If it does not, you had physics hiding inside
+your numerics and did not know.
 
 The README answers five questions in order:
 
@@ -60,6 +73,10 @@ The README answers five questions in order:
 Question 4 is the one that separates this from a folder of notebooks. Tests
 assert properties — energy conservation, known analytic limits, symmetries —
 not saved output. Question 5 is the one interviewers actually read.
+
+And a green suite is never a certificate. In `tmm/` it stayed green while two
+whole classes of input returned nonsense silently; probing found them, not
+reasoning. Every entry records where it stops being right.
 
 ## Migration backlog
 

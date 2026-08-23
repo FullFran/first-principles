@@ -1,13 +1,40 @@
 # Transfer Matrix Method
 
 Reflection and transmission of light through a stack of thin films, computed
-from Snell's law and the Fresnel equations alone. About 120 lines of core.
+from Snell's law and the Fresnel equations alone. 259 lines of core across two
+solvers that must agree with each other.
 
 | | |
 |---|---|
 | **Level** | L1 derive · L2 implement · L3 experiment |
-| **Core** | [`core.py`](core.py) — 149 lines, 103 without comments |
+| **Domain** | [`physics.py`](physics.py) — 119 lines, no algorithm in it |
+| **Methods** | [`transfer_matrix.py`](methods/transfer_matrix.py) 44 · [`recursion.py`](methods/recursion.py) 38 |
+| **Tests** | 217, of which the contract suite runs against every method |
 | **Migrated from** | [`Physics-simulations/Cristal_multicapa`](https://github.com/FullFran/Physics-simulations) (2024, master's course) |
+
+## Layout
+
+```
+physics.py            the domain: Snell, Fresnel, phase, flux, invariants
+methods/
+  transfer_matrix.py  one way to solve the stack
+  recursion.py        another way (Rouard), numerically better behaved
+solve.py              orchestration: validate, dispatch, convert to power
+tests/
+  test_physics.py     domain laws, no solver involved
+  test_methods.py     the contract, parametrised over every method
+  test_methods_agree.py   the methods cross-checked against each other
+```
+
+One dependency rule: **`methods/` imports `physics`, `physics` imports
+nobody.** A method receives quantities the domain already computed and returns
+amplitudes; it never touches Snell, flux or power.
+
+The split is not filing. It exists because *the physics is the invariant and
+the algorithm is a choice* — and the way to prove you understand which is
+which is to swap the algorithm and watch every physical law survive. That is
+what `test_methods.py` does, and it is the only thing making the folder
+boundary real. Without it the directories would be decoration.
 
 ## 1. What problem does it solve
 
@@ -22,7 +49,7 @@ anti-reflection coating, a dielectric filter.
 
 ## 2. The equations
 
-Only three ideas, and the whole implementation is their product.
+Only three ideas. Everything else is bookkeeping.
 
 **Snell**, written so it survives absorption and total internal reflection.
 The transverse wavevector $n\sin\theta$ is conserved, so
@@ -43,20 +70,29 @@ r^p_{ij} = \frac{n_j c_i - n_i c_j}{n_j c_i + n_i c_j}
 
 $$\delta_k = \frac{2\pi}{\lambda} n_k c_k d_k$$
 
-Assemble. Each interface and each layer becomes a $2\times2$ matrix acting on
-the pair (forward, backward) amplitude:
+That is the whole domain. The two methods are two ways of composing it.
+
+**Transfer matrix** — make each interface and each layer a $2\times2$ matrix
+and multiply:
 
 $$I_{ij} = \frac{1}{t_{ij}}\begin{pmatrix}1 & r_{ij}\\ r_{ij} & 1\end{pmatrix}
 \qquad
-P_k = \begin{pmatrix}e^{-i\delta_k} & 0\\ 0 & e^{i\delta_k}\end{pmatrix}$$
-
-$$M = I_{01}\,P_1\,I_{12}\,P_2\cdots I_{N-2,N-1}
+P_k = \begin{pmatrix}e^{-i\delta_k} & 0\\ 0 & e^{i\delta_k}\end{pmatrix}
 \qquad
-r = \frac{M_{10}}{M_{00}} \qquad t = \frac{1}{M_{00}}$$
+r = \frac{M_{10}}{M_{00}},\; t = \frac{1}{M_{00}}$$
 
-The last step is the one worth slowing down on. $R = |r|^2$, but
-**$T \neq |t|^2$** — transmittance carries the ratio of normal energy flux
-between substrate and ambient, and that projection differs per polarisation:
+**Recursion** — fold one layer at a time, starting at the substrate:
+
+$$r_k = \frac{\rho + r_{k+1}e^{2i\delta}}{1 + \rho\, r_{k+1}e^{2i\delta}}
+\qquad
+t_k = \frac{\tau\, t_{k+1}e^{i\delta}}{1 + \rho\, r_{k+1}e^{2i\delta}}$$
+
+Same physics, different arithmetic. They agree to $10^{-13}$, and that
+agreement is asserted in the suite.
+
+Last step, worth slowing down on. $R = |r|^2$, but **$T \neq |t|^2$** —
+transmittance carries the ratio of normal energy flux between substrate and
+ambient, and that projection differs per polarisation:
 
 $$T^s = |t|^2\,\frac{\mathrm{Re}(n_f c_f)}{\mathrm{Re}(n_0 c_0)}
 \qquad
@@ -65,19 +101,24 @@ T^p = |t|^2\,\frac{\mathrm{Re}(n_f c_f^{*})}{\mathrm{Re}(n_0 c_0^{*})}$$
 ## 3. What I implemented
 
 ```
-layer_cosines()        complex Snell with forward-decaying branch selection
-fresnel()              amplitude r, t at one interface, both polarisations
-amplitudes()           the matrix product -> stack r, t
-RT()                   power reflectance and transmittance
+physics.layer_cosines()       complex Snell with forward-decaying branch
+physics.fresnel()             amplitude r, t at one interface
+physics.accumulated_phase()   delta across a layer
+physics.normal_flux()         the projection that makes T != |t|^2
+physics.check_domain()        the invariants, enforced not assumed
+methods.transfer_matrix       the matrix product
+methods.recursion             Rouard's recursion
+solve.amplitudes() / .RT()    dispatch and convert
 ```
 
 No matrix inversion anywhere — writing the interface matrix in terms of the
-Fresnel coefficients removes the `linalg.inv` that the 2024 version called
-twice per layer.
+Fresnel coefficients removes the `linalg.inv` the 2024 version called twice
+per layer.
 
 ## 4. What I verified
 
-72 property tests. Each encodes something the physics guarantees.
+217 tests. Each encodes something the physics guarantees, and the contract
+ones run once per method.
 
 | Property | Why it bites |
 |---|---|
@@ -92,8 +133,9 @@ twice per layer.
 | Half-wave layer is absentee | Phase convention is right |
 | (HL)ᴺ matches the quarter-wave admittance transform | Multi-layer interference is right |
 | Reversing a symmetric stack preserves R | Catches index-alignment bugs |
+| **Every method agrees with every other to 1e-13** | Two independent algorithms, one answer |
 
-Two experiments push past pass/fail into prediction:
+Two experiments push past pass/fail into prediction.
 
 **[`experiments/bragg_mirror.py`](experiments/bragg_mirror.py)** — peak
 reflectance matches the analytic admittance to six decimals, and the stopband
@@ -131,11 +173,11 @@ zero (~1e-8, limited by the angular grid):
 - **Field profiles inside the stack.** Only the exterior r and t.
 - **Dispersion.** n is a constant, not n(λ).
 - **Vectorisation over wavelength.** One λ per call, on purpose — the
-  matrix product stays readable. A spectrum is a loop in the experiment.
+  composition stays readable. A spectrum is a loop in the experiment.
 - **Inverse design.** The 2024 original had a genetic optimiser and a Keras
   surrogate bolted on. That is a different problem and does not belong in an
   implementation meant to be read.
-- **Gain media and absorbing ambients.** Not approximated — refused. See below.
+- **Gain media and absorbing ambients.** Not approximated — refused.
 
 ## Where this stops being right
 
@@ -146,36 +188,27 @@ than assumed:
 |---|---|---|
 | Ambient with Im(n) > 0 | incident power is undefined; unguarded it returned R = 5.83, T = −4.82 | `ValueError` |
 | Gain medium, Im(n) < 0 | the forward-decaying branch rule stops holding; unguarded it returned T = 1.27, A = −0.29 | `ValueError` |
-| ~20 µm of metal in one layer | `M₀₀` overflows and r goes NaN | undefended — T is already 1e-278 at 8 µm, so nothing physical lives there |
+| ~20 µm of metal in one layer | `transfer-matrix` overflows `M₀₀` and r goes NaN | use `method="recursion"`, which cannot grow |
 | Anything in the omissions list above | not modelled | out of scope by design |
 
-Both `ValueError`s exist because probing found them, not because I reasoned
-my way there. That is worth recording: the suite was green and the two holes
-were wide open. A test suite proves the cases you thought of.
+Both `ValueError`s exist because probing found them, not because I reasoned my
+way there. That is worth recording: the suite was green and the two holes were
+wide open. **A test suite proves the cases you thought of.**
 
-## Provenance: what the 2024 version got wrong
-
-Worth recording, because the failures are more instructive than the code.
-
-| Probe | 2024 original | Correct |
-|---|---|---|
-| Air → glass, single interface | R = 0.000000 | 0.04 |
-| Absorbing film, 30° | A = **−0.247579** | 0 < A < 1 |
-| Glass → air, 60° (past critical) | R = **nan** | 1.0 |
-
-The root cause of the first is one line: the exit medium was hardcoded to
-`n[0]`, so the substrate index was silently discarded. The other two come
-from `np.arcsin`, which cannot represent a complex angle.
-
-**The lesson that made this migration worth doing:** the original satisfied
-R + T = 1 to six decimals in every one of those broken cases. Energy
-conservation is necessary and nowhere near sufficient. A test suite that only
-checks conservation would have signed off on all three defects.
+The third row is the one that pays for the architecture. Two methods, one
+domain: the physics is identical to 1e-13 and only the numerical ceiling
+differs, which is exactly the distinction the folder split claims to make.
 
 ## Run it
 
 ```bash
-uv run pytest tmm                            # 72 tests
+uv run pytest tmm                            # 217 tests
 uv run python tmm/experiments/bragg_mirror.py
 uv run python tmm/experiments/brewster.py
+```
+
+```python
+from solve import RT
+RT("s", [1.0, 2.3, 1.45, 1.52], [0, 60, 95, 0], 550.0)
+RT("s", n, d, 550.0, method="recursion")     # same physics, different arithmetic
 ```

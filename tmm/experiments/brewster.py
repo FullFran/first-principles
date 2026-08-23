@@ -19,7 +19,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from core import RT
+from solve import RT
 
 GREEN = 550.0
 CASES = [("air -> glass", 1.0, 1.52), ("air -> silicon", 1.0, 3.88), ("glass -> air", 1.52, 1.0)]
