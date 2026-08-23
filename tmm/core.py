@@ -25,6 +25,9 @@ import numpy as np
 
 __all__ = ["amplitudes", "RT", "fresnel", "layer_cosines"]
 
+# Slack for float noise when checking that an index is real or passive.
+PASSIVITY_TOL = 1e-12
+
 
 def layer_cosines(n, theta0):
     """cos(theta) in every layer, valid for absorbing media and beyond the
@@ -77,6 +80,26 @@ def _propagation_matrix(n_k, cos_k, thickness, wavelength):
     return np.array([[np.exp(-1j * delta), 0.0], [0.0, np.exp(1j * delta)]])
 
 
+def _check_domain(n):
+    """Refuse the two cases where this formulation returns nonsense quietly.
+
+    Both were found by probing rather than by reasoning, which is the point of
+    having them here: unguarded, an absorbing ambient returned R = 5.83 with
+    T = -4.82, and a gain medium returned T = 1.27 with A = -0.29. Neither
+    raised, neither warned.
+    """
+    if n[0].imag > PASSIVITY_TOL:
+        raise ValueError(
+            "the ambient medium must be transparent: incident power is "
+            f"undefined when the incoming wave already decays (got n[0] = {n[0]})"
+        )
+    if np.any(n.imag < -PASSIVITY_TOL):
+        raise ValueError(
+            "all media must be passive, Im(n) >= 0; the forward-decaying "
+            "branch rule in layer_cosines() does not hold for gain"
+        )
+
+
 def amplitudes(pol, n, d, wavelength, theta0=0.0):
     """Amplitude coefficients (r, t) of the whole stack."""
     if len(n) != len(d):
@@ -87,6 +110,7 @@ def amplitudes(pol, n, d, wavelength, theta0=0.0):
         raise ValueError(f"polarisation must be 's' or 'p', got {pol!r}")
 
     n = np.asarray(n, dtype=complex)
+    _check_domain(n)
     cos_theta = layer_cosines(n, theta0)
 
     matrix = _interface_matrix(pol, n[0], n[1], cos_theta[0], cos_theta[1])

@@ -6,7 +6,7 @@ from Snell's law and the Fresnel equations alone. About 120 lines of core.
 | | |
 |---|---|
 | **Level** | L1 derive · L2 implement · L3 experiment |
-| **Core** | [`core.py`](core.py) — 125 lines, 86 without comments |
+| **Core** | [`core.py`](core.py) — 149 lines, 103 without comments |
 | **Migrated from** | [`Physics-simulations/Cristal_multicapa`](https://github.com/FullFran/Physics-simulations) (2024, master's course) |
 
 ## 1. What problem does it solve
@@ -77,14 +77,16 @@ twice per layer.
 
 ## 4. What I verified
 
-45 property tests. Each encodes something the physics guarantees.
+72 property tests. Each encodes something the physics guarantees.
 
 | Property | Why it bites |
 |---|---|
 | Single interface reproduces closed-form Fresnel | The most basic case in optics |
 | Air/glass → R = 0.04 at normal incidence | The number everyone knows by heart |
 | Lossless stack: R + T = 1 at every angle, both polarisations | Energy bookkeeping |
-| Absorbing film: 0 < A < 1 | Complex index handled, not faked |
+| Absorbing film matches the Airy closed form to 1e-13 | Complex index handled, not faked |
+| Absorbing film: 0 < A < 1 | The weak version of the row above, kept as a cheap net |
+| Absorbing ambient and gain media raise | The two cases that used to fail silently |
 | Past the critical angle: R = 1 exactly, no NaN | The branch cut is right |
 | Brewster: Rp = 0 at arctan(n₂/n₁) | Polarisation physics, not just algebra |
 | Half-wave layer is absentee | Phase convention is right |
@@ -133,6 +135,23 @@ zero (~1e-8, limited by the angular grid):
 - **Inverse design.** The 2024 original had a genetic optimiser and a Keras
   surrogate bolted on. That is a different problem and does not belong in an
   implementation meant to be read.
+- **Gain media and absorbing ambients.** Not approximated — refused. See below.
+
+## Where this stops being right
+
+Verified inside a domain, not in general. The boundaries, measured rather
+than assumed:
+
+| Boundary | What happens | Handling |
+|---|---|---|
+| Ambient with Im(n) > 0 | incident power is undefined; unguarded it returned R = 5.83, T = −4.82 | `ValueError` |
+| Gain medium, Im(n) < 0 | the forward-decaying branch rule stops holding; unguarded it returned T = 1.27, A = −0.29 | `ValueError` |
+| ~20 µm of metal in one layer | `M₀₀` overflows and r goes NaN | undefended — T is already 1e-278 at 8 µm, so nothing physical lives there |
+| Anything in the omissions list above | not modelled | out of scope by design |
+
+Both `ValueError`s exist because probing found them, not because I reasoned
+my way there. That is worth recording: the suite was green and the two holes
+were wide open. A test suite proves the cases you thought of.
 
 ## Provenance: what the 2024 version got wrong
 
@@ -156,7 +175,7 @@ checks conservation would have signed off on all three defects.
 ## Run it
 
 ```bash
-uv run pytest tmm                            # 45 tests
+uv run pytest tmm                            # 72 tests
 uv run python tmm/experiments/bragg_mirror.py
 uv run python tmm/experiments/brewster.py
 ```

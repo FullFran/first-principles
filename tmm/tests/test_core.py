@@ -8,7 +8,7 @@ defects found in the 2024 original (see ../README.md).
 import numpy as np
 import pytest
 
-from core import RT, amplitudes
+from core import RT, amplitudes, fresnel, layer_cosines
 
 # Wavelength and thicknesses are in nanometres.
 GREEN = 550.0
@@ -56,6 +56,31 @@ def test_lossless_stack_conserves_energy(pol, angle):
     d = [0] + [60, 95] * 4 + [0]
     R, T = RT(pol, n, d, GREEN, np.deg2rad(angle))
     assert R + T == pytest.approx(1.0, abs=1e-12)
+
+
+def airy_reference(pol, n0, n1, n2, thickness, theta0, wavelength=GREEN):
+    """Single-film r by Airy summation, independent of the matrix product.
+
+    It reuses the Fresnel coefficients (themselves checked against closed form
+    above) but assembles them by hand, so it exercises none of the matrix
+    machinery it is used to verify.
+    """
+    n = np.array([n0, n1, n2], dtype=complex)
+    c = layer_cosines(n, theta0)
+    r01, _ = fresnel(pol, n[0], n[1], c[0], c[1])
+    r12, _ = fresnel(pol, n[1], n[2], c[1], c[2])
+    phase = np.exp(2j * (2 * np.pi / wavelength) * n[1] * c[1] * thickness)
+    return (r01 + r12 * phase) / (1 + r01 * r12 * phase)
+
+
+@pytest.mark.parametrize("pol", POLARISATIONS)
+@pytest.mark.parametrize("n_film", [1.5 + 0.1j, 0.15 + 3.5j, 2.0 + 0.001j])
+@pytest.mark.parametrize("angle", [0.0, 30.0, 60.0, 85.0])
+def test_absorbing_film_matches_airy_closed_form(pol, n_film, angle):
+    """A bound like 0 < A < 1 would accept a lot of wrong answers. This does not."""
+    theta = np.deg2rad(angle)
+    r, _ = amplitudes(pol, [1.0, n_film, 1.52], [0, 80, 0], GREEN, theta)
+    assert r == pytest.approx(airy_reference(pol, 1.0, n_film, 1.52, 80, theta), abs=1e-13)
 
 
 @pytest.mark.parametrize("angle", ANGLES)
@@ -138,3 +163,30 @@ def test_layer_count_mismatch_is_rejected():
 def test_unknown_polarisation_is_rejected():
     with pytest.raises(ValueError):
         RT("circular", [1.0, 1.5], [0, 0], GREEN)
+
+
+# --- outside the domain, fail loudly instead of returning nonsense ----------
+
+def test_absorbing_ambient_is_rejected():
+    """Incident power is undefined if the incoming wave already decays.
+
+    Left unguarded this returned R = 5.83 and T = -4.82 without complaint.
+    """
+    with pytest.raises(ValueError, match="ambient"):
+        RT("s", [1.0 + 0.05j, 1.5, 1.0], [0, 100, 0], GREEN, np.deg2rad(20))
+
+
+def test_gain_medium_is_rejected():
+    """The forward-branch rule assumes passivity; n'' < 0 silently broke it.
+
+    Left unguarded this returned T = 1.27 and A = -0.29.
+    """
+    with pytest.raises(ValueError, match="passive"):
+        RT("s", [1.0, 1.5 - 0.05j, 1.0], [0, 200, 0], GREEN)
+
+
+def test_absorbing_substrate_is_allowed():
+    """Unlike the ambient, a lossy exit medium is well defined: T is the flux
+    crossing into it."""
+    R, T = RT("s", [1.0, 1.5, 0.15 + 3.5j], [0, 100, 0], GREEN, np.deg2rad(20))
+    assert 0.0 <= R <= 1.0 and 0.0 <= T <= 1.0 and R + T <= 1.0
