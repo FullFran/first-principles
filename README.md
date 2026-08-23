@@ -30,6 +30,8 @@ each, or they stay archived where they are.
    that knows no algorithm; the algorithms live beside it and depend on it,
    never the reverse. Enforced by a contract suite every method must pass —
    without that, the folders are decoration.
+   Written up in [`docs/architecture.md`](docs/architecture.md), with where
+   the line goes in the ambiguous cases and who else does this.
 
 ## Map
 
