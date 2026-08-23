@@ -38,6 +38,7 @@ each, or they stay archived where they are.
 | Topic | Derive | Implement | Experiment | Origin |
 |---|:---:|:---:|:---:|---|
 | [Transfer Matrix Method](tmm/) | ✓ | ✓ | ✓ | `Physics-simulations/Cristal_multicapa` (2024) |
+| [Hopfield network](hopfield/) | ✓ | ✓ | ✓ | `Optimization-Algorithms/4` (2024) |
 
 **L1 derive** — I can reconstruct it from the equations.
 **L2 implement** — I can write a minimal working version.
@@ -89,6 +90,7 @@ Audited from GitHub, decided by contents rather than by name.
 | [`Physics-simulations/Cristal_multicapa`](https://github.com/FullFran/Physics-simulations) | matrix method, multilayer | **done** → [`tmm/`](tmm/) · source archived |
 | `Physics-simulations/Iter_rad_material` | `rayosnew.py`, `unfoton.py` — photon transport by ray tracing | queued — feeds the same intuition as `snow-mcrt` |
 | `Physics-simulations/Magnetic Mirrors` | charged particle in a magnetic bottle | queued — Boris pusher from the Lorentz force |
+| [`Optimization-Algorithms/4`](https://github.com/FullFran/Optimization-Algorithms) | `hopfiled.py`, Hopfield over thresholded photos | **done** → [`hopfield/`](hopfield/) |
 | [`Point_classifier`](https://github.com/FullFran/Point_classifier) | `redNumpy.ipynb`, net in pure NumPy | next — MLP from backprop · already archived |
 | `Tema-3-...alta-dimensionalidad` + `Optimization-Algorithms/3` | simulated annealing, genetic, TSP — duplicated across two repos | merge into one entry |
 | `minimalRandEM` | random-media EM, MATLAB | open it, then decide |
@@ -118,6 +120,12 @@ Never an import.
 ## Run
 
 ```bash
-uv run pytest              # every entry
-uv run pytest tmm          # one entry
+uv run pytest tmm                                  # one entry
+uv run pytest hopfield
+for e in */; do [ -d "$e/tests" ] && uv run pytest "$e"; done   # all of them
 ```
+
+One session per entry, deliberately. Entries are standalone, so more than one
+of them defines `solve` and `methods`; put two on `sys.path` at once and the
+first import wins silently. Running them separately is the price of being able
+to copy a folder out and have it work.
