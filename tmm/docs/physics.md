@@ -1,6 +1,6 @@
 # Light through a stack of thin films
 
-> The physics behind [`tmm/`](../tmm/), derived from the problem rather than
+> The physics behind [`tmm/`](../README.md), derived from the problem rather than
 > from the formula. Read this if you want to know *why* the equations in
 > `tmm/physics.py` are those and not others.
 
@@ -281,7 +281,7 @@ $$k_{z,k} = k_0\sqrt{n_k^2 - \left(n_0\sin\theta_0\right)^2}
 \qquad
 \cos\theta_k = \sqrt{1 - \left(\frac{n_0\sin\theta_0}{n_k}\right)^2}$$
 
-This is [`physics.layer_cosines()`](../tmm/physics.py). Two things about it.
+This is [`physics.layer_cosines()`](../physics.py). Two things about it.
 
 **Never compute $\theta_k = \arcsin(\cdot)$ and then take its cosine.** The
 textbook route throws away precisely the two interesting regimes:
@@ -341,7 +341,7 @@ $$r^p_{ij} = \frac{n_jc_i - n_ic_j}{n_jc_i + n_ic_j},
 \qquad
 t^p_{ij} = \frac{2n_ic_i}{n_jc_i + n_ic_j}$$
 
-This is [`physics.fresnel()`](../tmm/physics.py), verbatim.
+This is [`physics.fresnel()`](../physics.py), verbatim.
 
 > **A convention warning that costs people days.** For p-polarisation, $t^p$
 > above is the ratio of the *magnitudes* of the electric fields, not of their
@@ -362,7 +362,7 @@ reflected wave is radiated by dipoles driven in medium $j$, which oscillate
 along $\mathbf{E}_j$; at Brewster that direction *is* the direction the
 reflected ray would have to go, and a dipole does not radiate along its own
 axis. Nothing analogous exists for s, whose dipoles are always perpendicular
-to the plane. This is the claim [`experiments/brewster.py`](../tmm/experiments/brewster.py)
+to the plane. This is the claim [`experiments/brewster.py`](../experiments/brewster.py)
 tests numerically.
 
 ### 6.4 Phase across a layer
@@ -372,7 +372,7 @@ $e^{i k_{z,k} d_k}$, so define
 
 $$\delta_k = \frac{2\pi}{\lambda}\, n_k \cos\theta_k\, d_k$$
 
-[`physics.accumulated_phase()`](../tmm/physics.py). Real part = phase
+[`physics.accumulated_phase()`](../physics.py). Real part = phase
 advance; imaginary part = attenuation, since
 $e^{i\delta} = e^{i\operatorname{Re}\delta}e^{-\operatorname{Im}\delta}$. For a
 passive medium on the correct branch $\operatorname{Im}\delta \ge 0$, so
@@ -381,7 +381,7 @@ reason one of the two solvers cannot overflow ([§7.4](#74-same-physics-differen
 
 **That is the whole domain.** Snell, Fresnel, phase. Three ideas, ~40 lines of
 Python. Everything after this is bookkeeping — and the point of the repo's
-[architecture](architecture.md) is that bookkeeping is exactly the part you are
+[architecture](../../docs/architecture.md) is that bookkeeping is exactly the part you are
 allowed to swap.
 
 ### 6.5 Power: why $T \neq |t|^2$
@@ -400,7 +400,7 @@ $$S_z^{\,s} \propto \operatorname{Re}(n\cos\theta)\,|E|^2,
 \qquad
 S_z^{\,p} \propto \operatorname{Re}(n\cos^*\!\theta)\,|E|^2$$
 
-Hence [`physics.normal_flux()`](../tmm/physics.py) and
+Hence [`physics.normal_flux()`](../physics.py) and
 
 $$T^s = |t|^2\,\frac{\operatorname{Re}(n_fc_f)}{\operatorname{Re}(n_0c_0)},
 \qquad
@@ -469,7 +469,7 @@ t_k = \frac{\tau_k\, t_{k+1}\, e^{i\delta_{k+1}}}{1 + \rho_k r_{k+1}e^{2i\delta_
 
 where $\rho_k,\tau_k$ are the bare Fresnel coefficients of interface
 $k\!\to\!k\!+\!1$ and $\delta_{k+1}$ is the phase across the layer just below.
-This is [`methods/recursion.py`](../tmm/methods/recursion.py), and it is
+This is [`methods/recursion.py`](../methods/recursion.py), and it is
 Rouard's 1937 method.
 
 ### 7.3 Many films: multiply matrices (Abelès)
@@ -492,7 +492,7 @@ with $A_0 = 1$, and read off
 
 $$t = \frac{1}{M_{00}}, \qquad r = \frac{M_{10}}{M_{00}}$$
 
-[`methods/transfer_matrix.py`](../tmm/methods/transfer_matrix.py). Writing
+[`methods/transfer_matrix.py`](../methods/transfer_matrix.py). Writing
 $I$ in terms of the Fresnel coefficients rather than the textbook
 $D_iP D_i^{-1}$ form removes a `linalg.inv` per layer — the 2024 original
 called it twice per layer for no reason.
@@ -519,7 +519,7 @@ unusable for thick gratings, and the reason RCWA implementations use
 scattering matrices instead — see Li (1996), which is the standard reference
 on exactly this failure.
 
-**And this is the payoff of the [architecture](architecture.md).** Two
+**And this is the payoff of the [architecture](../../docs/architecture.md).** Two
 methods, one `physics.py`: the physics is identical to $10^{-13}$ and only
 the numerical ceiling differs. Being able to say that sentence with confidence
 is the whole reason the equations live in a file that imports nothing.
@@ -651,7 +651,7 @@ The only thing that made this work was choosing the branch correctly in §6.2.
 
 These are what you check code against. Cross-checking two solvers proves they
 agree; checking against a closed form proves they are *right*. Every row here
-is a test in [`tmm/tests/`](../tmm/tests/).
+is a test in [`../tests/`](../tests/).
 
 | Situation | Result |
 |---|---|
@@ -683,7 +683,7 @@ cross-method agreement ranks below both.
 The book's rule: **predict before you run.** Both experiments in the entry are
 built as predictions with a number attached, not as plots to admire.
 
-**[`bragg_mirror.py`](../tmm/experiments/bragg_mirror.py)** — prediction: peak
+**[`bragg_mirror.py`](../experiments/bragg_mirror.py)** — prediction: peak
 reflectance follows the admittance transform exactly, and the stopband width
 does not move with $N$.
 
@@ -704,7 +704,7 @@ napkin estimate of §8.3 also lands: for $N=8$ it predicts a leakage of
 $1.639\times10^{-3}$ against a measured $1.637\times10^{-3}$, and stays within
 0.2% all the way to $N=16$.
 
-**[`brewster.py`](../tmm/experiments/brewster.py)** — prediction: the minimum
+**[`brewster.py`](../experiments/brewster.py)** — prediction: the minimum
 of $R^p$ sits at $\arctan(n_2/n_1)$ and is a true zero.
 
 ```
@@ -716,7 +716,7 @@ of $R^p$ sits at $\arctan(n_2/n_1)$ and is a true zero.
 
 A true zero, limited by the angular grid rather than by the physics.
 
-The complete verification table lives in [`tmm/README.md`](../tmm/README.md)
+The complete verification table lives in [the entry README](../README.md)
 §4.
 
 ---
@@ -891,5 +891,6 @@ much they would teach:
 
 ---
 
-*Implementation: [`tmm/`](../tmm/) · Architecture:
-[`docs/architecture.md`](architecture.md)*
+*Code: [`../physics.py`](../physics.py) and [`../methods/`](../methods/) ·
+Entry: [`../README.md`](../README.md) · Repo-wide architecture:
+[`docs/architecture.md`](../../docs/architecture.md)*

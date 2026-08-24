@@ -46,15 +46,16 @@ each, or they stay archived where they are.
 
 A row only gets a mark when it is true today, not when it once was.
 
-Longer write-ups live in [`docs/`](docs/): the [physics/numerics
-split](docs/architecture.md) every entry follows, and the [full derivation
-behind `tmm/`](docs/tmm-physics.md) — from the phenomenon to the limits.
+Repo-wide write-ups live in [`docs/`](docs/) — right now the [physics/numerics
+split](docs/architecture.md). Anything specific to one entry lives inside it,
+in its own `docs/`: the [derivation behind `tmm/`](tmm/docs/physics.md).
 
 ## Anatomy of an entry
 
 ```
 tmm/
 ├── README.md        the five questions, derivation included
+├── docs/            the long-form derivation, when the entry earns one
 ├── physics.py       the domain: the equations, and nothing that solves them
 ├── methods/         one file per algorithm, each importing the domain
 ├── solve.py         orchestration: validate, dispatch, convert

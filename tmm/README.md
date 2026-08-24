@@ -15,6 +15,7 @@ solvers that must agree with each other.
 ## Layout
 
 ```
+docs/physics.md       the derivation, from the phenomenon down
 physics.py            the domain: Snell, Fresnel, phase, flux, invariants
 methods/
   transfer_matrix.py  one way to solve the stack
@@ -52,7 +53,7 @@ anti-reflection coating, a dielectric filter.
 Only three ideas. Everything else is bookkeeping. Derived from the problem
 downwards — what multilayers are for, the order-of-magnitude estimates, the
 branch cut, the scale analysis and where it all stops — in
-[`docs/tmm-physics.md`](../docs/tmm-physics.md).
+[`docs/physics.md`](docs/physics.md).
 
 **Snell**, written so it survives absorption and total internal reflection.
 The transverse wavevector $n\sin\theta$ is conserved, so

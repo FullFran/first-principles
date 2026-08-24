@@ -20,6 +20,7 @@ One arrow, no exceptions. Everything below is a consequence.
 
 ```
 entry/
+├── docs/            long-form derivation, when the entry earns one
 ├── physics.py       the domain: the equations and their invariants
 ├── methods/         one file per algorithm, each importing the domain
 │   ├── method_a.py
