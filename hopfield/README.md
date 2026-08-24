@@ -51,7 +51,7 @@ $$W = \frac{1}{N}\sum_{\mu=1}^{P} p^{\mu} (p^{\mu})^{\mathsf T},
 
 **Dynamics** — align each unit with the field the others exert on it:
 
-$$h_i = \sum_j W_{ij} s_j, \qquad s_i \leftarrow \operatorname{sign}(h_i)$$
+$$h_i = \sum_j W_{ij} s_j, \qquad s_i \leftarrow \mathrm{sign}(h_i)$$
 
 Two conditions carry the whole theory: $W$ symmetric and $W_{ii}=0$. Given
 those, flipping one unit at a time changes the energy by

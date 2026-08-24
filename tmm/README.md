@@ -83,7 +83,7 @@ $$I_{ij} = \frac{1}{t_{ij}}\begin{pmatrix}1 & r_{ij}\cr r_{ij} & 1\end{pmatrix}
 \qquad
 P_k = \begin{pmatrix}e^{-i\delta_k} & 0\cr 0 & e^{i\delta_k}\end{pmatrix}
 \qquad
-r = \frac{M_{10}}{M_{00}},\thickspace t = \frac{1}{M_{00}}$$
+r = \frac{M_{10}}{M_{00}},\enspace t = \frac{1}{M_{00}}$$
 
 **Recursion** — fold one layer at a time, starting at the substrate:
 

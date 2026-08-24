@@ -186,7 +186,7 @@ detector is
 
 $$r_{\text{total}} = \sum_m r_m e^{i\phi_m},
 \qquad R = \left|\sum_m r_m e^{i\phi_m}\right|^2
-\thickspace \neq\thickspace \sum_m |r_m|^2$$
+\neq \sum_m |r_m|^2$$
 
 The cross terms *are* the phenomenon. Drop them and the soap bubble is grey.
 
@@ -219,8 +219,8 @@ domain of validity, and it is the thing the tests can never tell you.
 | Piecewise-homogeneous, isotropic $n_k$ | A scalar index per layer | Birefringence, graded index, liquid crystals |
 | Non-magnetic, $\mu = 1$ | Impedance is $1/n$, not $\sqrt{\mu/\varepsilon}$ | Metamaterials, magnetic media, RF |
 | Linear, local response | Superposition; $n$ independent of intensity | Nonlinear optics, spatial dispersion |
-| Passive media, $\operatorname{Im} n \ge 0$ | The forward-decaying branch is well defined | Gain media, lasers — **refused** by `check_domain` |
-| Transparent ambient, $\operatorname{Im} n_0 = 0$ | Incident power is well defined | Immersion in an absorbing liquid — **refused** |
+| Passive media, $\mathrm{Im} n \ge 0$ | The forward-decaying branch is well defined | Gain media, lasers — **refused** by `check_domain` |
+| Transparent ambient, $\mathrm{Im} n_0 = 0$ | Incident power is well defined | Immersion in an absorbing liquid — **refused** |
 | Fully coherent throughout | Amplitudes add everywhere | Thick substrates, broadband sources ([§11](#11-where-the-model-stops-being-true)) |
 | $n$ constant, not $n(\lambda)$ | One index per material | Any real spectrum over a wide range |
 
@@ -251,7 +251,7 @@ At any interface the boundary condition must hold for *all* $x$, and two
 functions of $x$ agree everywhere only if their $x$-dependence is identical.
 Therefore:
 
-$$\boxed{\thickspace k_x \text{ is the same in every layer}\thickspace }$$
+$$\boxed{\enspace k_x \text{ is the same in every layer}\enspace}$$
 
 This is Snell's law. Not "a law about rays bending" — a **conservation law
 enforced by a symmetry**, exactly like momentum conservation from translational
@@ -277,7 +277,7 @@ block-diagonalised the problem for us.
 Inside layer $k$, $k_x^2 + k_{z,k}^2 = k_0^2 n_k^2$, so
 
 $$k_{z,k} = k_0\sqrt{n_k^2 - \left(n_0\sin\theta_0\right)^2}
-\thickspace \equiv\thickspace k_0\thinspace n_k\cos\theta_k,
+\equiv k_0\thinspace n_k\cos\theta_k,
 \qquad
 \cos\theta_k = \sqrt{1 - \left(\frac{n_0\sin\theta_0}{n_k}\right)^2}$$
 
@@ -299,9 +299,9 @@ numerics.** $\sqrt{\cdot}$ returns $\pm$; the wave $e^{ik_z z}$ either decays
 or grows as it goes forward. The physical requirement is that a passive medium
 attenuate:
 
-$$\operatorname{Im}\negthinspace \left(n_k\cos\theta_k\right) \ge 0
+$$\mathrm{Im}\negthinspace \left(n_k\cos\theta_k\right) \ge 0
 \qquad\text{and, when that is zero,}\qquad
-\operatorname{Re}\negthinspace \left(n_k\cos\theta_k\right) \gt 0$$
+\mathrm{Re}\negthinspace \left(n_k\cos\theta_k\right) \gt 0$$
 
 The first condition says *decay forward, never amplify*. The second picks the
 propagating wave that carries energy in $+z$ for the lossless case, where the
@@ -374,8 +374,8 @@ $$\delta_k = \frac{2\pi}{\lambda}\thinspace n_k \cos\theta_k\thinspace d_k$$
 
 [`physics.accumulated_phase()`](../physics.py). Real part = phase
 advance; imaginary part = attenuation, since
-$e^{i\delta} = e^{i\operatorname{Re}\delta}e^{-\operatorname{Im}\delta}$. For a
-passive medium on the correct branch $\operatorname{Im}\delta \ge 0$, so
+$e^{i\delta} = e^{i\mathrm{Re}\delta}e^{-\mathrm{Im}\delta}$. For a
+passive medium on the correct branch $\mathrm{Im}\delta \ge 0$, so
 $|e^{i\delta}| \le 1$ **always**. Remember that inequality: it is the entire
 reason one of the two solvers cannot overflow ([§7.4](#74-same-physics-different-numerics)).
 
@@ -392,19 +392,19 @@ not, because the transmitted wave lives in a *different* medium and travels at
 a different angle. What is conserved is the component of the time-averaged
 Poynting vector **normal to the interface**:
 
-$$S_z = \tfrac12\operatorname{Re}\left(\mathbf{E}\times\mathbf{H}^{\ast}\right)_z$$
+$$S_z = \tfrac12\mathrm{Re}\left(\mathbf{E}\times\mathbf{H}^{\ast}\right)_z$$
 
 Doing that integral for each polarisation, with the field conventions of §6.3:
 
-$$S_z^{\thinspace s} \propto \operatorname{Re}(n\cos\theta)\thinspace |E|^2,
+$$S_z^{\thinspace s} \propto \mathrm{Re}(n\cos\theta)\thinspace |E|^2,
 \qquad
-S_z^{\thinspace p} \propto \operatorname{Re}(n\cos^{\ast}\negthinspace \theta)\thinspace |E|^2$$
+S_z^{\thinspace p} \propto \mathrm{Re}(n\cos^{\ast}\negthinspace \theta)\thinspace |E|^2$$
 
 Hence [`physics.normal_flux()`](../physics.py) and
 
-$$T^s = |t|^2\thinspace \frac{\operatorname{Re}(n_fc_f)}{\operatorname{Re}(n_0c_0)},
+$$T^s = |t|^2\thinspace \frac{\mathrm{Re}(n_fc_f)}{\mathrm{Re}(n_0c_0)},
 \qquad
-T^p = |t|^2\thinspace \frac{\operatorname{Re}(n_fc_f^{\ast})}{\operatorname{Re}(n_0c_0^{\ast})},
+T^p = |t|^2\thinspace \frac{\mathrm{Re}(n_fc_f^{\ast})}{\mathrm{Re}(n_0c_0^{\ast})},
 \qquad
 A = 1 - R - T$$
 
@@ -416,7 +416,7 @@ least likely to notice you got it wrong.
 
 For transparent media at normal incidence it degenerates to the familiar
 $T = |t|^2 n_f/n_0$, and past the critical angle
-$\operatorname{Re}(n_fc_f) = 0$ gives $T = 0$ exactly, with no special case in
+$\mathrm{Re}(n_fc_f) = 0$ gives $T = 0$ exactly, with no special case in
 the code.
 
 > **Where this bites.** If the *ambient* absorbs, "incident power" has no
@@ -445,7 +445,7 @@ $$r_{10} = -r_{01},\qquad t_{01}t_{10} = 1 - r_{01}^2$$
 
 and the whole thing collapses:
 
-$$\boxed{\thickspace r = \frac{r_{01} + r_{12}e^{2i\delta}}{1 + r_{01}r_{12}e^{2i\delta}}\thickspace }$$
+$$\boxed{\enspace r = \frac{r_{01} + r_{12}e^{2i\delta}}{1 + r_{01}r_{12}e^{2i\delta}}\enspace}$$
 
 Infinitely many bounces, one fraction. This is Airy's formula, and it is the
 single most useful closed form in the subject — every test in
@@ -502,7 +502,7 @@ called it twice per layer for no reason.
 The two solvers agree to $10^{-13}$, which the suite asserts. They are *not*
 equally good.
 
-$P_k$ contains $e^{+i\delta_k}$, whose modulus is $e^{+\operatorname{Im}\delta_k}$
+$P_k$ contains $e^{+i\delta_k}$, whose modulus is $e^{+\mathrm{Im}\delta_k}$
 — it **grows** exponentially in an absorbing layer. The final ratio
 $r = M_{10}/M_{00}$ cancels that growth analytically, so the answer stays
 right... until $M_{00}$ exceeds the float range and the cancellation becomes
@@ -550,7 +550,7 @@ your way to a hundred nanometres.
 
 ### 8.2 The half wave, $\delta = \pi$ — the absentee layer
 
-Then $P_k = \operatorname{diag}(e^{-i\pi}, e^{i\pi}) = -I$, which flips the
+Then $P_k = \mathrm{diag}(e^{-i\pi}, e^{i\pi}) = -I$, which flips the
 sign of the whole matrix product. So $r = M_{10}/M_{00}$ is **completely
 unchanged**, and $t$ picks up a phase $\pi$ with $|t|$ unchanged.
 
@@ -588,7 +588,7 @@ R = \left(\frac{n_0 - Y}{n_0 + Y}\right)^2$$
 
 For $Y \gg n_0$ this linearises beautifully:
 
-$$1 - R \thickspace \simeq\thickspace \frac{4n_0}{n_s}\left(\frac{n_L}{n_H}\right)^{2N}$$
+$$1 - R  \simeq \frac{4n_0}{n_s}\left(\frac{n_L}{n_H}\right)^{2N}$$
 
 **Every added period multiplies the leakage by $(n_L/n_H)^2$.** With
 $n_H/n_L = 2.3/1.45$ that factor is 0.40 — each pair cuts what gets through
@@ -602,7 +602,7 @@ hundred. Exponentials are why mirror design is easy and why it took
 ### 8.4 Stopband width — the one that does *not* improve
 
 The band edges of an infinite periodic stack are where the Bloch phase of one
-period goes complex, $\left|\tfrac12\operatorname{Tr}M_{\text{period}}\right| = 1$.
+period goes complex, $\left|\tfrac12\mathrm{Tr}M_{\text{period}}\right| = 1$.
 For a quarter-wave period that gives
 
 $$\frac{\Delta\lambda}{\lambda_0} = \frac{4}{\pi}\arcsin\negthinspace \left(\frac{n_H-n_L}{n_H+n_L}\right)$$
@@ -751,7 +751,7 @@ implement it, and any real coating on a real substrate needs it.
 | Limit | What actually happens | This entry |
 |---|---|---|
 | Absorbing ambient | Incident power undefined; gave $R=5.83$, $T=-4.82$ | `ValueError` |
-| Gain medium, $\operatorname{Im}n\lt 0$ | Forward-decay branch rule breaks; gave $A=-0.29$ | `ValueError` |
+| Gain medium, $\mathrm{Im}n\lt 0$ | Forward-decay branch rule breaks; gave $A=-0.29$ | `ValueError` |
 | ~20 µm of metal, one layer | $M_{00}$ overflows, $r \to$ `NaN` | use `method="recursion"` |
 | Dispersion $n(\lambda)$ | Every spectrum is subtly wrong | not modelled — $n$ is constant |
 | Interface roughness | Scattering out of the specular direction; $R+T\lt 1$ with no absorption | not modelled |
@@ -780,7 +780,7 @@ open. Which is the general lesson and the reason this section exists at all:
   algebra per polarisation, and Brewster falls out of $r^p = 0$.
 - The whole domain is **three equations**: Snell, Fresnel, phase. Everything
   else is bookkeeping — and bookkeeping is the part you are allowed to swap.
-- **The branch cut is physics.** Choosing $\operatorname{Im}(n\cos\theta)\ge0$
+- **The branch cut is physics.** Choosing $\mathrm{Im}(n\cos\theta)\ge0$
   is the statement that passive media attenuate. Get it wrong and energy
   conservation still passes.
 - **$T \neq |t|^2$.** Transmittance carries the ratio of normal energy flux,
