@@ -49,7 +49,10 @@ anti-reflection coating, a dielectric filter.
 
 ## 2. The equations
 
-Only three ideas. Everything else is bookkeeping.
+Only three ideas. Everything else is bookkeeping. Derived from the problem
+downwards — what multilayers are for, the order-of-magnitude estimates, the
+branch cut, the scale analysis and where it all stops — in
+[`docs/tmm-physics.md`](../docs/tmm-physics.md).
 
 **Snell**, written so it survives absorption and total internal reflection.
 The transverse wavevector $n\sin\theta$ is conserved, so

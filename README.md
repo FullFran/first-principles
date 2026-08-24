@@ -46,6 +46,10 @@ each, or they stay archived where they are.
 
 A row only gets a mark when it is true today, not when it once was.
 
+Longer write-ups live in [`docs/`](docs/): the [physics/numerics
+split](docs/architecture.md) every entry follows, and the [full derivation
+behind `tmm/`](docs/tmm-physics.md) — from the phenomenon to the limits.
+
 ## Anatomy of an entry
 
 ```
