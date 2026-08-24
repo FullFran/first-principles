@@ -79,17 +79,17 @@ That is the whole domain. The two methods are two ways of composing it.
 **Transfer matrix** — make each interface and each layer a $2\times2$ matrix
 and multiply:
 
-$$I_{ij} = \frac{1}{t_{ij}}\begin{pmatrix}1 & r_{ij}\\ r_{ij} & 1\end{pmatrix}
+$$I_{ij} = \frac{1}{t_{ij}}\begin{pmatrix}1 & r_{ij}\cr r_{ij} & 1\end{pmatrix}
 \qquad
-P_k = \begin{pmatrix}e^{-i\delta_k} & 0\\ 0 & e^{i\delta_k}\end{pmatrix}
+P_k = \begin{pmatrix}e^{-i\delta_k} & 0\cr 0 & e^{i\delta_k}\end{pmatrix}
 \qquad
-r = \frac{M_{10}}{M_{00}},\; t = \frac{1}{M_{00}}$$
+r = \frac{M_{10}}{M_{00}},\thickspace t = \frac{1}{M_{00}}$$
 
 **Recursion** — fold one layer at a time, starting at the substrate:
 
-$$r_k = \frac{\rho + r_{k+1}e^{2i\delta}}{1 + \rho\, r_{k+1}e^{2i\delta}}
+$$r_k = \frac{\rho + r_{k+1}e^{2i\delta}}{1 + \rho\thinspace r_{k+1}e^{2i\delta}}
 \qquad
-t_k = \frac{\tau\, t_{k+1}e^{i\delta}}{1 + \rho\, r_{k+1}e^{2i\delta}}$$
+t_k = \frac{\tau\thinspace t_{k+1}e^{i\delta}}{1 + \rho\thinspace r_{k+1}e^{2i\delta}}$$
 
 Same physics, different arithmetic. They agree to $10^{-13}$, and that
 agreement is asserted in the suite.
@@ -98,9 +98,9 @@ Last step, worth slowing down on. $R = |r|^2$, but **$T \neq |t|^2$** —
 transmittance carries the ratio of normal energy flux between substrate and
 ambient, and that projection differs per polarisation:
 
-$$T^s = |t|^2\,\frac{\mathrm{Re}(n_f c_f)}{\mathrm{Re}(n_0 c_0)}
+$$T^s = |t|^2\thinspace \frac{\mathrm{Re}(n_f c_f)}{\mathrm{Re}(n_0 c_0)}
 \qquad
-T^p = |t|^2\,\frac{\mathrm{Re}(n_f c_f^{*})}{\mathrm{Re}(n_0 c_0^{*})}$$
+T^p = |t|^2\thinspace \frac{\mathrm{Re}(n_f c_f^{\ast})}{\mathrm{Re}(n_0 c_0^{\ast})}$$
 
 ## 3. What I implemented
 

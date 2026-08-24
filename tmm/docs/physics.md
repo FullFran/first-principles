@@ -61,8 +61,8 @@ $5\times10^{14}$ Hz.
 Call those $R$ and $T$. That is the entire forward problem, and it is what
 `tmm/` computes.
 
-Reverse it — *choose the $n_k$ and $d_k$ so that $R(\lambda,\theta)$ is the
-curve you want* — and you have the inverse problem, which is an entire
+Reverse it — choose the $n_k$ and $d_k$ so that $R(\lambda,\theta)$ is the
+curve you want — and you have the inverse problem, which is an entire
 industry. The forward problem has to be exact and cheap first, because the
 inverse one calls it a few million times.
 
@@ -81,10 +81,10 @@ count surfaces: a six-element camera lens has twelve, and $0.9574^{12} = 0.59$
 around inside the barrel producing flare and washing out contrast.
 
 Bare silicon is worse. At $n \approx 3.9$ the front surface of a solar cell
-reflects $\left(\frac{1-3.9}{1+3.9}\right)^2 = 35\%$ before the semiconductor
-gets a chance. One quarter-wave layer of silicon nitride takes that to
-$\sim0.02\%$ at the design wavelength. That single layer is worth more than
-most of the process optimisation downstream of it.
+reflects $\left(\frac{1-3.9}{1+3.9}\right)^2 = 0.35$ before the semiconductor
+gets a chance — 35% of the light. One quarter-wave layer of silicon nitride
+takes that to 0.02% at the design wavelength. That single layer is worth more
+than most of the process optimisation downstream of it.
 
 The history is a good lesson in noticing things. Rayleigh (1886) observed that
 *tarnished* glass transmitted more light than fresh glass — the opposite of
@@ -156,7 +156,7 @@ and the gap does not exist if you did not commit.
 
 > 1. A quarter-wave anti-reflection layer for green light on glass. **How
 >    thick, in nanometres?** How many atoms is that?
-> 2. You need a mirror with $R > 99.9\%$ built from layers of $n_H = 2.3$ and
+> 2. You need a mirror with $R \gt 0.999$ built from layers of $n_H = 2.3$ and
 >    $n_L = 1.45$. **How many pairs?** Ten? Fifty? Five hundred?
 > 3. A Bragg mirror designed for 550 nm reflects a band, not a line. **How
 >    wide is that band?** And does stacking more periods make it wider?
@@ -186,7 +186,7 @@ detector is
 
 $$r_{\text{total}} = \sum_m r_m e^{i\phi_m},
 \qquad R = \left|\sum_m r_m e^{i\phi_m}\right|^2
-\;\neq\; \sum_m |r_m|^2$$
+\thickspace \neq\thickspace \sum_m |r_m|^2$$
 
 The cross terms *are* the phenomenon. Drop them and the soap bubble is grey.
 
@@ -246,12 +246,12 @@ into something a computer can do in twenty lines.
 
 **Fact 1 — the structure only depends on $z$.** It is invariant under
 translation in $x$ and $y$. So we can look for solutions of the form
-$\psi(x,z) = \psi(z)\,e^{ik_x x}$, with the plane of incidence taken as $xz$.
-At any interface the boundary condition must hold *for all $x$*, and two
+$\psi(x,z) = \psi(z)\thinspace e^{ik_x x}$, with the plane of incidence taken as $xz$.
+At any interface the boundary condition must hold for *all* $x$, and two
 functions of $x$ agree everywhere only if their $x$-dependence is identical.
 Therefore:
 
-$$\boxed{\;k_x \text{ is the same in every layer}\;}$$
+$$\boxed{\thickspace k_x \text{ is the same in every layer}\thickspace }$$
 
 This is Snell's law. Not "a law about rays bending" — a **conservation law
 enforced by a symmetry**, exactly like momentum conservation from translational
@@ -277,7 +277,7 @@ block-diagonalised the problem for us.
 Inside layer $k$, $k_x^2 + k_{z,k}^2 = k_0^2 n_k^2$, so
 
 $$k_{z,k} = k_0\sqrt{n_k^2 - \left(n_0\sin\theta_0\right)^2}
-\;\equiv\; k_0\, n_k\cos\theta_k,
+\thickspace \equiv\thickspace k_0\thinspace n_k\cos\theta_k,
 \qquad
 \cos\theta_k = \sqrt{1 - \left(\frac{n_0\sin\theta_0}{n_k}\right)^2}$$
 
@@ -299,9 +299,9 @@ numerics.** $\sqrt{\cdot}$ returns $\pm$; the wave $e^{ik_z z}$ either decays
 or grows as it goes forward. The physical requirement is that a passive medium
 attenuate:
 
-$$\operatorname{Im}\!\left(n_k\cos\theta_k\right) \ge 0
+$$\operatorname{Im}\negthinspace \left(n_k\cos\theta_k\right) \ge 0
 \qquad\text{and, when that is zero,}\qquad
-\operatorname{Re}\!\left(n_k\cos\theta_k\right) > 0$$
+\operatorname{Re}\negthinspace \left(n_k\cos\theta_k\right) \gt 0$$
 
 The first condition says *decay forward, never amplify*. The second picks the
 propagating wave that carries energy in $+z$ for the lossless case, where the
@@ -370,7 +370,7 @@ tests numerically.
 Crossing a layer of thickness $d_k$ once multiplies the amplitude by
 $e^{i k_{z,k} d_k}$, so define
 
-$$\delta_k = \frac{2\pi}{\lambda}\, n_k \cos\theta_k\, d_k$$
+$$\delta_k = \frac{2\pi}{\lambda}\thinspace n_k \cos\theta_k\thinspace d_k$$
 
 [`physics.accumulated_phase()`](../physics.py). Real part = phase
 advance; imaginary part = attenuation, since
@@ -392,19 +392,19 @@ not, because the transmitted wave lives in a *different* medium and travels at
 a different angle. What is conserved is the component of the time-averaged
 Poynting vector **normal to the interface**:
 
-$$S_z = \tfrac12\operatorname{Re}\left(\mathbf{E}\times\mathbf{H}^*\right)_z$$
+$$S_z = \tfrac12\operatorname{Re}\left(\mathbf{E}\times\mathbf{H}^{\ast}\right)_z$$
 
 Doing that integral for each polarisation, with the field conventions of §6.3:
 
-$$S_z^{\,s} \propto \operatorname{Re}(n\cos\theta)\,|E|^2,
+$$S_z^{\thinspace s} \propto \operatorname{Re}(n\cos\theta)\thinspace |E|^2,
 \qquad
-S_z^{\,p} \propto \operatorname{Re}(n\cos^*\!\theta)\,|E|^2$$
+S_z^{\thinspace p} \propto \operatorname{Re}(n\cos^{\ast}\negthinspace \theta)\thinspace |E|^2$$
 
 Hence [`physics.normal_flux()`](../physics.py) and
 
-$$T^s = |t|^2\,\frac{\operatorname{Re}(n_fc_f)}{\operatorname{Re}(n_0c_0)},
+$$T^s = |t|^2\thinspace \frac{\operatorname{Re}(n_fc_f)}{\operatorname{Re}(n_0c_0)},
 \qquad
-T^p = |t|^2\,\frac{\operatorname{Re}(n_fc_f^{*})}{\operatorname{Re}(n_0c_0^{*})},
+T^p = |t|^2\thinspace \frac{\operatorname{Re}(n_fc_f^{\ast})}{\operatorname{Re}(n_0c_0^{\ast})},
 \qquad
 A = 1 - R - T$$
 
@@ -445,7 +445,7 @@ $$r_{10} = -r_{01},\qquad t_{01}t_{10} = 1 - r_{01}^2$$
 
 and the whole thing collapses:
 
-$$\boxed{\;r = \frac{r_{01} + r_{12}e^{2i\delta}}{1 + r_{01}r_{12}e^{2i\delta}}\;}$$
+$$\boxed{\thickspace r = \frac{r_{01} + r_{12}e^{2i\delta}}{1 + r_{01}r_{12}e^{2i\delta}}\thickspace }$$
 
 Infinitely many bounces, one fraction. This is Airy's formula, and it is the
 single most useful closed form in the subject — every test in
@@ -465,12 +465,12 @@ walk up:
 
 $$r_k = \frac{\rho_k + r_{k+1}e^{2i\delta_{k+1}}}{1 + \rho_k r_{k+1}e^{2i\delta_{k+1}}},
 \qquad
-t_k = \frac{\tau_k\, t_{k+1}\, e^{i\delta_{k+1}}}{1 + \rho_k r_{k+1}e^{2i\delta_{k+1}}}$$
+t_k = \frac{\tau_k\thinspace t_{k+1}\thinspace e^{i\delta_{k+1}}}{1 + \rho_k r_{k+1}e^{2i\delta_{k+1}}}$$
 
 where $\rho_k,\tau_k$ are the bare Fresnel coefficients of interface
-$k\!\to\!k\!+\!1$ and $\delta_{k+1}$ is the phase across the layer just below.
-This is [`methods/recursion.py`](../methods/recursion.py), and it is
-Rouard's 1937 method.
+$k \to k+1$, and $\delta_{k+1}$ is the phase across the layer just below.
+This is [`methods/recursion.py`](../methods/recursion.py), and it is Rouard's
+1937 method.
 
 ### 7.3 Many films: multiply matrices (Abelès)
 
@@ -479,9 +479,9 @@ backward-going — in each layer, and note that both interfaces and propagation
 act on that pair **linearly**. Converting the scattering description into a
 transfer description (using the same Stokes relations) gives
 
-$$I_{ij} = \frac{1}{t_{ij}}\begin{pmatrix}1 & r_{ij}\\ r_{ij} & 1\end{pmatrix},
+$$I_{ij} = \frac{1}{t_{ij}}\begin{pmatrix}1 & r_{ij}\cr r_{ij} & 1\end{pmatrix},
 \qquad
-P_k = \begin{pmatrix}e^{-i\delta_k} & 0\\ 0 & e^{i\delta_k}\end{pmatrix}$$
+P_k = \begin{pmatrix}e^{-i\delta_k} & 0\cr 0 & e^{i\delta_k}\end{pmatrix}$$
 
 and the stack is just their product:
 
@@ -534,7 +534,7 @@ $\delta$.
 
 ### 8.1 The quarter wave, $\delta = \pi/2$
 
-$$n\,d\cos\theta = \frac{\lambda}{4}
+$$n\thinspace d\cos\theta = \frac{\lambda}{4}
 \quad\Longrightarrow\quad
 d = \frac{\lambda}{4n\cos\theta}$$
 
@@ -572,7 +572,7 @@ Everything about quarter-wave design follows from iterating that one map.
 **Single-layer AR.** One layer on a substrate: $Y = n_1^2/n_s$. Zero
 reflection needs $Y = n_0$, so
 
-$$\boxed{\,n_1 = \sqrt{n_0 n_s}\,}$$
+$$\boxed{\thinspace n_1 = \sqrt{n_0 n_s}\thinspace }$$
 
 For glass, $\sqrt{1.52} = 1.23$. No durable material has an index that low —
 MgF₂ at 1.38 is the practical floor, giving 1.3% instead of 0%, which is why
@@ -588,14 +588,14 @@ R = \left(\frac{n_0 - Y}{n_0 + Y}\right)^2$$
 
 For $Y \gg n_0$ this linearises beautifully:
 
-$$1 - R \;\simeq\; \frac{4n_0}{n_s}\left(\frac{n_L}{n_H}\right)^{2N}$$
+$$1 - R \thickspace \simeq\thickspace \frac{4n_0}{n_s}\left(\frac{n_L}{n_H}\right)^{2N}$$
 
 **Every added period multiplies the leakage by $(n_L/n_H)^2$.** With
 $n_H/n_L = 2.3/1.45$ that factor is 0.40 — each pair cuts what gets through
 by 2.5×.
 
-*Answer to question 2:* $R > 99.9\%$ needs $Y > 4n_0/10^{-3} = 4000$, so
-$(1.586)^{2N} > 2632$, so $N > 8.5$: **nine pairs.** Not fifty, not five
+*Answer to question 2:* $R \gt 0.999$ needs $Y \gt 4n_0/10^{-3} = 4000$, so
+$(1.586)^{2N} \gt 2632$, so $N \gt 8.5$: **nine pairs.** Not fifty, not five
 hundred. Exponentials are why mirror design is easy and why it took
 `experiments/bragg_mirror.py` only 16 periods to reach six nines.
 
@@ -605,7 +605,7 @@ The band edges of an infinite periodic stack are where the Bloch phase of one
 period goes complex, $\left|\tfrac12\operatorname{Tr}M_{\text{period}}\right| = 1$.
 For a quarter-wave period that gives
 
-$$\frac{\Delta\lambda}{\lambda_0} = \frac{4}{\pi}\arcsin\!\left(\frac{n_H-n_L}{n_H+n_L}\right)$$
+$$\frac{\Delta\lambda}{\lambda_0} = \frac{4}{\pi}\arcsin\negthinspace \left(\frac{n_H-n_L}{n_H+n_L}\right)$$
 
 *Answer to question 3:* with 2.3/1.45 that is **0.291**, i.e. 160 nm wide at
 550 nm. And note what is *not* in the formula: $N$. **More periods buy depth,
@@ -633,8 +633,8 @@ colour from pigment in nature and in a lab.
 
 ### 8.6 The critical angle
 
-For $n_0 > n_1$ and $\sin\theta_0 > n_1/n_0$, $\cos\theta_1$ becomes purely
-imaginary. On the physical branch $n_1c_1 = i\,|n_1c_1|$, so with $n_0c_0$
+For $n_0 \gt n_1$ and $\sin\theta_0 \gt n_1/n_0$, $\cos\theta_1$ becomes purely
+imaginary. On the physical branch $n_1c_1 = i\thinspace |n_1c_1|$, so with $n_0c_0$
 real,
 
 $$r = \frac{n_0c_0 - i|n_1c_1|}{n_0c_0 + i|n_1c_1|}
@@ -751,10 +751,10 @@ implement it, and any real coating on a real substrate needs it.
 | Limit | What actually happens | This entry |
 |---|---|---|
 | Absorbing ambient | Incident power undefined; gave $R=5.83$, $T=-4.82$ | `ValueError` |
-| Gain medium, $\operatorname{Im}n<0$ | Forward-decay branch rule breaks; gave $A=-0.29$ | `ValueError` |
+| Gain medium, $\operatorname{Im}n\lt 0$ | Forward-decay branch rule breaks; gave $A=-0.29$ | `ValueError` |
 | ~20 µm of metal, one layer | $M_{00}$ overflows, $r \to$ `NaN` | use `method="recursion"` |
 | Dispersion $n(\lambda)$ | Every spectrum is subtly wrong | not modelled — $n$ is constant |
-| Interface roughness | Scattering out of the specular direction; $R+T<1$ with no absorption | not modelled |
+| Interface roughness | Scattering out of the specular direction; $R+T\lt 1$ with no absorption | not modelled |
 | Birefringence / anisotropy | s and p stop decoupling; needs $4\times4$ | not modelled |
 | Focused or short-pulse beams | Angular/spectral spread, Goos–Hänchen shift | not modelled |
 | Nonlinearity | $n(I)$; superposition fails | not modelled |

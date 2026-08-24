@@ -40,9 +40,9 @@ an energy function, and recall is the network rolling into it.
 
 Three lines and the model is complete.
 
-**Energy** over bipolar states $s \in \{-1,+1\}^N$:
+**Energy** over bipolar states $s \in \lbrace -1,+1\rbrace ^N$:
 
-$$E(s) = -\tfrac{1}{2}\, s^{\mathsf T} W s$$
+$$E(s) = -\tfrac{1}{2}\thinspace s^{\mathsf T} W s$$
 
 **Hebbian learning** — one pass, no gradient, no iteration:
 
@@ -56,7 +56,7 @@ $$h_i = \sum_j W_{ij} s_j, \qquad s_i \leftarrow \operatorname{sign}(h_i)$$
 Two conditions carry the whole theory: $W$ symmetric and $W_{ii}=0$. Given
 those, flipping one unit at a time changes the energy by
 
-$$\Delta E = -\Delta s_i \, h_i \le 0$$
+$$\Delta E = -\Delta s_i \thinspace h_i \le 0$$
 
 so $E$ is a Lyapunov function and the network cannot wander forever. **That
 argument needs the units to move one at a time.** Update them all at once and
