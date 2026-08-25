@@ -200,6 +200,19 @@ Two consequences that make it more than a technicality:
   which is what you actually get if the layer is thicker than the source's
   coherence length ([§11](#11-where-the-model-stops-being-true)).
 
+![Left: reflectance of one quarter-wave layer on glass against wavelength. The
+coherent calculation dips well below both the power-adding result and bare
+glass; the power-adding result is a horizontal line. Right: reflectance of a
+Bragg stack against the number of periods, coherent against
+incoherent.](figures/coherence.png)
+
+**What to conclude:** the power-adding model is not a rougher version of the
+same answer. Notice that layer *thickness cannot appear anywhere in it* — an
+incoherent stack has no way to know a layer is a quarter wave, so its answer
+is the same at every wavelength, and at 16 periods it reaches 0.65 where the
+real stack reaches 0.999999. The cross terms are not a correction. They are
+the phenomenon.
+
 So the problem is: sum an infinite number of coherent partial waves. That
 sounds bad. It collapses to two lines of algebra, and that collapse is the
 nice part of the derivation.
@@ -514,6 +527,16 @@ $|e^{i\delta}| \le 1$ for a passive layer (§6.4), so the recursion can only
 ever shrink. It underflows gracefully to zero where the matrix product
 explodes.
 
+![Top: reflectance of a single absorbing layer against its thickness, computed
+both ways. The two curves lie on top of each other and then the transfer-matrix
+one stops. Bottom: the difference between them, at the scale of one bit of
+double precision.](figures/ceiling.png)
+
+**What to conclude:** there is no gradual loss of accuracy to warn you. The two
+solvers agree to $7\times10^{-16}$ — a bit or two of double precision — at
+every thickness where both run, and then one of them stops returning a number
+at all. Measured here: the last finite answer at 20.6 µm and `NaN` by 20.7 µm.
+
 This is the same instability that makes the transfer-matrix formulation
 unusable for thick gratings, and the reason RCWA implementations use
 scattering matrices instead — see Li (1996), which is the standard reference
@@ -614,6 +637,19 @@ instinct here is wrong, which is why it is worth measuring rather than
 asserting — and why `bragg_mirror.py` prints the measured width next to the
 analytic one.
 
+![Left: light leaking through a quarter-wave stack against the number of
+periods, on a log scale, with the closed-form estimate. Right: the stopband
+edges in nanometres against the number of periods, for two index contrasts,
+each against its exact band drawn as a fixed strip.](figures/depth_not_width.png)
+
+**What to conclude:** the two panels answer two different questions that are
+easy to confuse. Depth falls exponentially in $N$ and lands on the napkin
+estimate over seven decades. Width does not move with $N$ at all — the strips
+are the exact Bloch band and no $N$ appears in the formula that draws them.
+What grows is the *measurement*: a 99%-of-peak threshold can only find the band
+once the top is flat enough to have a 99% to speak of, which is why the entry's
+own experiment reports a width that drifts upward at low $N$.
+
 To widen a stopband you need contrast, or several stacks at staggered design
 wavelengths (a "chirped" mirror). To reach *every* angle and both
 polarisations simultaneously you need a condition on contrast that most
@@ -630,6 +666,15 @@ Every dielectric filter blueshifts with angle. Your glasses look more purple
 edge-on; a dichroic mirror in a microscope has to be specified at 45°, not at
 normal incidence. This is also the fingerprint that distinguishes structural
 colour from pigment in nature and in a lab.
+
+![Reflectance of an eight-period quarter-wave stack against wavelength, at four
+angles of incidence. The whole stopband moves towards shorter wavelengths as
+the angle grows.](figures/blueshift.png)
+
+**What to conclude:** the band does not blur or weaken as you tilt it — it
+*moves*, bodily, and keeps its shape. Measured here: 66 nm to the blue between
+normal incidence and 60°. A pigment cannot do this, which is why angle
+dependence is the one-second test for structural colour.
 
 ### 8.6 The critical angle
 
@@ -680,8 +725,11 @@ cross-method agreement ranks below both.
 
 ## 10. What the simulation showed
 
-The book's rule: **predict before you run.** Both experiments in the entry are
-built as predictions with a number attached, not as plots to admire.
+The book's rule: **predict before you run.** Every experiment in the entry is
+built as a prediction with a number attached, not as a plot to admire. The
+figures throughout this document come from
+[`stack.py`](../experiments/stack.py), which exists because the derivation
+argues four things nothing in the entry had plotted.
 
 **[`bragg_mirror.py`](../experiments/bragg_mirror.py)** — prediction: peak
 reflectance follows the admittance transform exactly, and the stopband width

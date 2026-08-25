@@ -16,11 +16,16 @@ solvers that must agree with each other.
 
 ```
 docs/physics.md       the derivation, from the phenomenon down
+docs/figures/         the four figures it argues from — tracked, unlike out/
 physics.py            the domain: Snell, Fresnel, phase, flux, invariants
 methods/
   transfer_matrix.py  one way to solve the stack
   recursion.py        another way (Rouard), numerically better behaved
 solve.py              orchestration: validate, dispatch, convert to power
+experiments/
+  bragg_mirror.py     peak reflectance and stopband against closed form
+  brewster.py         the p-polarised zero, and where it sits
+  stack.py            the measurements behind the derivation's figures
 tests/
   test_physics.py     domain laws, no solver involved
   test_methods.py     the contract, parametrised over every method
@@ -209,6 +214,7 @@ differs, which is exactly the distinction the folder split claims to make.
 uv run pytest tmm                            # 217 tests
 uv run python tmm/experiments/bragg_mirror.py
 uv run python tmm/experiments/brewster.py
+uv run python tmm/experiments/stack.py       # ~15 s, redraws docs/figures/
 ```
 
 ```python
