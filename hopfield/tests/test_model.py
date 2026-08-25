@@ -92,6 +92,81 @@ def test_zero_field_leaves_the_unit_alone():
     assert set(np.unique(result)) <= {-1, 1}
 
 
+# --- when the boundary is actually reached ---------------------------------
+#
+# The tie above is not hypothetical, and whether it can happen at all is fixed
+# by an exact parity law rather than by luck. Writing N*h_i = q_i . v with
+# q_j = (p^1_j, ..., p^P_j) and v_mu = sum_{j != i} p^mu_j s_j, each v_mu is a
+# sum of N-1 terms of +-1 and so carries the parity of N-1. The dot product is
+# a signed sum of P of them, so N*h_i carries the parity of P(N-1). Zero is
+# even. An odd product therefore forbids the tie outright.
+#
+# These tests work in exact integer arithmetic on N*W, never on the float
+# field: float64 rounds a true zero to ~1e-17 and reports no tie at all.
+
+def integer_field(patterns, states):
+    """N * h for every state, as exact integers. N*W is the Gram matrix."""
+    gram = patterns.T.astype(np.int64) @ patterns.astype(np.int64)
+    np.fill_diagonal(gram, 0)
+    return np.asarray(states, dtype=np.int64) @ gram.T
+
+
+def tie_rate(count, size, trials=10, states=20, seed=0):
+    ties = total = 0
+    for trial in range(trials):
+        rng = np.random.default_rng(1000 * seed + trial)
+        patterns = rng.choice([-1, 1], size=(count, size)).astype(np.int8)
+        probes = rng.choice([-1, 1], size=(states, size)).astype(np.int8)
+        fields = integer_field(patterns, probes)
+        ties += int(np.count_nonzero(fields == 0))
+        total += fields.size
+    return ties / total
+
+
+@pytest.mark.parametrize("size, count", [(20, 3), (100, 3), (576, 5)])
+def test_an_exact_tie_is_impossible_when_p_times_n_minus_one_is_odd(size, count):
+    """Parity forbids it. Not rare -- unreachable."""
+    assert (count * (size - 1)) % 2 == 1, "these cases must have an odd product"
+    assert tie_rate(count, size) == 0.0
+
+
+@pytest.mark.parametrize("size, count", [(20, 4), (21, 3), (577, 3)])
+def test_exact_ties_do_occur_when_p_times_n_minus_one_is_even(size, count):
+    """And they stay at the percent level rather than dying out with N, which
+    is why holding the current value is load-bearing and not defensive."""
+    assert (count * (size - 1)) % 2 == 0, "these cases must have an even product"
+    assert tie_rate(count, size) > 0.005
+
+
+def test_the_entrys_own_glyph_setup_can_tie():
+    """N = 576 with P = 4 gives P(N-1) = 2300, even. The convention matters in
+    the configuration this entry actually ships and runs experiments on."""
+    size, count = 576, 4
+    assert (count * (size - 1)) % 2 == 0
+    assert tie_rate(count, size) > 0.005
+
+
+def test_float64_under_reports_the_ties_it_was_written_to_catch():
+    """The guard is real and the arithmetic hides most of its work: an exact
+    zero accumulated over hundreds of float additions arrives as ~1e-17, and
+    the unit silently takes a direction chosen by rounding. Documented rather
+    than fixed -- either side of a tie is a legitimate tie-break, but nobody
+    should believe `h == 0` measures how often the branch is taken."""
+    exact = seen = 0
+    for trial in range(10):
+        rng = np.random.default_rng(trial)
+        patterns = rng.choice([-1, 1], size=(4, 60)).astype(np.int8)
+        probes = rng.choice([-1, 1], size=(20, 60)).astype(np.int8)
+        weights = model.hebbian_weights(patterns)
+
+        exact += int(np.count_nonzero(integer_field(patterns, probes) == 0))
+        seen += sum(int(np.count_nonzero(model.local_field(weights, s) == 0))
+                    for s in probes)
+
+    assert exact > 0, "these parameters must produce genuine ties"
+    assert seen < exact
+
+
 # --- domain invariants ------------------------------------------------------
 
 def test_non_bipolar_pattern_is_rejected():

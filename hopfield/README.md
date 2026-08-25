@@ -9,7 +9,7 @@ the memory. 209 lines of core across two update schedules.
 | **Level** | L1 derive · L2 implement · L3 experiment |
 | **Domain** | [`model.py`](model.py) — 98 lines, no dynamics loop in it |
 | **Methods** | [`asynchronous.py`](methods/asynchronous.py) 23 · [`synchronous.py`](methods/synchronous.py) 17 |
-| **Tests** | 37, split into domain, contract, and where the methods diverge |
+| **Tests** | 48, split into domain, contract, and where the methods diverge |
 | **Migrated from** | [`Optimization-Algorithms/4 Clasificación de eventos y detección de fallos`](https://github.com/FullFran/Optimization-Algorithms) (2024, master's course) |
 
 ## Layout
@@ -79,7 +79,7 @@ solve.relax()             sweep until a fixed point or a detected cycle
 
 ## 4. What I verified
 
-37 tests, in three groups. Note what is *not* in the contract: energy descent.
+48 tests, in three groups. Note what is *not* in the contract: energy descent.
 Demanding it from every method would assert something false.
 
 | Property | Scope |
@@ -94,8 +94,12 @@ Demanding it from every method would assert something false.
 | A stored pattern does not move | contract |
 | Recall from 5%, 15%, 25% flipped bits returns the memory exactly | contract |
 | Relaxation always terminates — fixed point or detected cycle | contract |
+| An exact tie is impossible when P(N−1) is odd, and common when it is even | domain |
+| float64 reports fewer ties than exist — documented, not fixed | domain |
 | **Asynchronous: energy never increases, always reaches a fixed point** | async only |
 | **Synchronous: energy can rise, and 2-cycles occur** | sync only |
+| **Synchronous: the period is 1 or 2 and never more** | sync only |
+| **Synchronous: F = −s(t)·W·s(t+1) never increases** | sync only |
 
 ### The experiments from the class activity
 
@@ -220,7 +224,7 @@ have nothing to do with the model.
 ## Run it
 
 ```bash
-uv run pytest hopfield                                       # 37 tests
+uv run pytest hopfield                                       # 48 tests
 uv run python hopfield/experiments/recall.py
 uv run python hopfield/experiments/associative_and_spurious.py
 uv run python hopfield/experiments/capacity.py               # ~20 s
