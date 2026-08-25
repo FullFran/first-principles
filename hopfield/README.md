@@ -15,11 +15,18 @@ the memory. 209 lines of core across two update schedules.
 ## Layout
 
 ```
+docs/model.md         the derivation, from the phenomenon down
+docs/figures/         the four figures it argues from — tracked, unlike out/
 model.py              the domain: energy, Hebbian rule, update rule, invariants
 methods/
   asynchronous.py     one unit at a time — energy descent guaranteed
   synchronous.py      all units at once — faster, no guarantee
 solve.py              termination: sweep until fixed point or cycle
+experiments/
+  recall.py                 store four glyphs, hand one back corrupted
+  associative_and_spurious.py   what it does that nobody asked for
+  capacity.py               error against load, three network sizes
+  landscape.py              the measurements behind the derivation's figures
 tests/
   test_model.py           domain laws, no dynamics
   test_methods.py         the contract, run against both schedules
@@ -38,7 +45,10 @@ an energy function, and recall is the network rolling into it.
 
 ## 2. The equations
 
-Three lines and the model is complete.
+Three lines and the model is complete. Derived from the problem downwards —
+what associative memory is for, the order-of-magnitude estimates, why the
+napkin capacity is wrong, the scale analysis and where it all stops — in
+[`docs/model.md`](docs/model.md).
 
 **Energy** over bipolar states $s \in \lbrace -1,+1\rbrace ^N$:
 
@@ -228,6 +238,7 @@ uv run pytest hopfield                                       # 48 tests
 uv run python hopfield/experiments/recall.py
 uv run python hopfield/experiments/associative_and_spurious.py
 uv run python hopfield/experiments/capacity.py               # ~20 s
+uv run python hopfield/experiments/landscape.py              # ~50 s, redraws docs/figures/
 ```
 
 ## What this sets up
