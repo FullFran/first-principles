@@ -85,8 +85,9 @@ Repo-wide write-ups live in [`docs/`](docs/) — right now the [physics/numerics
 split](docs/architecture.md). Anything specific to one entry lives inside it,
 in its own `docs/`: the derivations behind [`tmm/`](tmm/docs/physics.md),
 [`hopfield/`](hopfield/docs/model.md), [`mlp/`](mlp/docs/model.md),
-[`photon-transport/`](photon-transport/docs/physics.md) and
-[`sampling/`](sampling/docs/distribution.md).
+[`photon-transport/`](photon-transport/docs/physics.md),
+[`sampling/`](sampling/docs/distribution.md) and
+[`forest-fire/`](forest-fire/docs/lattice.md).
 
 Each of those carries a history section, because the people who got stuck on
 these problems are part of the explanation. Historical claims are marked **A**

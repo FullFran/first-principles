@@ -1,19 +1,29 @@
-"""Fewer sparks, bigger fires -- and the version of that claim which is false.
+"""Does putting out small fires cause big ones?
 
-There is a widely told argument that suppressing small fires causes large ones,
-because the fuel they would have consumed accumulates instead. This runs the
-two obvious experiments and they do not agree with each other.
+The argument is widely told: small fires consume fuel, so suppressing them
+lets fuel accumulate, so the fire that eventually comes is worse. It is used
+to explain Yellowstone in 1988 and a century of US fire policy.
 
-  1. Lower the ignition rate f. The forest grows denser between fires, and the
-     fires that do happen are larger. This is the effect, and it is large.
-  2. Let fires start, then put out any that would stay below a size threshold,
-     leaving the trees standing. This changes almost nothing, and the reason is
-     a conservation law: at steady state the area burned per step is pinned by
-     the area grown per step. Extinguishing a fire does not save its fuel, it
-     defers it to the next one.
+**The prediction I wrote down, and got wrong.** Extinguish every fire below a
+size threshold, leave its trees standing, and the tree density should climb and
+the largest fire should grow with it.
 
-So the mechanism is in when fires *start*, not in whether they are fought once
-started -- which is worth knowing before quoting the model at a policy.
+It does not. Density 0.398 to 0.395 across thresholds from 0 to 200, and total
+burned area 1.386M to 1.391M -- unchanged. There is a conservation law in the
+way: at steady state the area burned per step is pinned by the area grown per
+step, so putting a fire out does not save its fuel, it hands it to the next
+one. I was ready to report that the paradox does not appear in this model.
+
+**It does, on a different knob.** The literature puts the mechanism in the
+*ignition rate* rather than in fighting fires once started, so this runs that
+too: lower f, and the forest grows denser between fires because the fires are
+further apart in time. That one is enormous -- 2000x fewer sparks takes the
+largest fire from 1.5% of the forest to 98.6%.
+
+Both are here because the difference between them is the part worth knowing.
+They are different interventions in the real world too: preventing ignitions is
+not the same act as fighting a fire that has started, and the model supports
+only one of them.
 """
 
 import sys

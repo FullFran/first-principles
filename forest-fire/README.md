@@ -15,6 +15,8 @@ barely cross it. 220 lines of core.
 ## Layout
 
 ```
+docs/lattice.md       the derivation, from the phenomenon down
+docs/figures/         the figures it argues from — tracked, unlike out/
 lattice.py            the domain: three states, growth, lightning, spreading
 methods/
   instantaneous.py    the cluster burns before anything regrows
@@ -46,7 +48,10 @@ it.
 
 ## 2. The equations
 
-There are no equations, which is the point. There are three rules, applied to
+There are no equations, which is the point. Derived from the problem downwards
+— why tuning a system to its critical point explains nothing, what the
+threshold is, and where the whole thing stops being true — in
+[`docs/lattice.md`](docs/lattice.md). There are three rules, applied to
 every site each step:
 
 1. A burning site becomes empty.
