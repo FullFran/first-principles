@@ -1,0 +1,16 @@
+#!/bin/sh
+# Run every entry's suite in its own process.
+#
+# They cannot share one: see conftest.py at the repo root. Entries are
+# discovered rather than listed, so a new one is picked up by existing.
+set -e
+cd "$(dirname "$0")"
+
+status=0
+for entry in */conftest.py; do
+    entry=${entry%/conftest.py}
+    printf '\n=== %s ===\n' "$entry"
+    uv run pytest "$entry" "$@" || status=1
+done
+
+exit $status

@@ -128,7 +128,7 @@ Never an import.
 ```bash
 uv run pytest tmm                                  # one entry
 uv run pytest hopfield
-for e in */; do [ -d "$e/tests" ] && uv run pytest "$e"; done   # all of them
+./run-tests                                        # all of them, one process each
 ```
 
 One session per entry, deliberately. Entries are standalone, so more than one

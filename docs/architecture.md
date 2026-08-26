@@ -198,6 +198,21 @@ second one was earned by a measured defect: the transfer matrix overflows to
 NaN past roughly 20 µm of metal and the recursion does not. Until something
 like that shows up, one file is the right answer.
 
+**Standalone entries cannot share a test process.** Each entry puts its own
+directory on `sys.path` so that `import solve` works once you copy the folder
+out — that is rule 6, and it means two entries define the same module names.
+In one process only one of them can be `sys.modules["solve"]`, so the other
+entry's tests import a stranger. pytest stops on the duplicate test
+*filenames* with `import file mismatch`, which reads like a stale-cache
+problem and is not one; force past it with `--import-mode=importlib` and
+collection succeeds, 184 tests fail, and the reason appears nowhere in the
+output. No import mode fixes it, because the collision is on `sys.path` rather
+than in collection. The root `conftest.py` refuses such a run and says why,
+and `./run-tests` gives every entry its own process. One command was traded
+for the property that a folder still works after you copy it somewhere else,
+and for a repo that is read rather than installed that trade is the right way
+round.
+
 **Ceremony is the failure mode.** No entities, no use-case layer, no
 dependency injection, no value object wrapping a complex number. This repo
 caps a core at 500 lines, and a 150-line mechanism spread across twelve files
