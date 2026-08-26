@@ -28,6 +28,8 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+FIGURES = Path(__file__).resolve().parents[1] / "docs" / "figures"
+
 import model
 import solve
 from datasets import rings, uniform_layers
@@ -87,10 +89,10 @@ def main():
     ax.legend(frameon=False, fontsize=9)
     fig.tight_layout()
 
-    out = Path(__file__).parent / "out"
-    out.mkdir(exist_ok=True)
-    fig.savefig(out / "initialisation.png", dpi=140, bbox_inches="tight")
-    print(f"\nfigure -> {out / 'initialisation.png'}")
+    FIGURES.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGURES / "initialisation.png", dpi=140, facecolor="white",
+                bbox_inches="tight", pad_inches=0.22)
+    print(f"\nfigure -> docs/figures/initialisation.png")
 
 
 if __name__ == "__main__":

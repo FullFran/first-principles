@@ -49,8 +49,8 @@ A row only gets a mark when it is true today, not when it once was.
 
 Repo-wide write-ups live in [`docs/`](docs/) — right now the [physics/numerics
 split](docs/architecture.md). Anything specific to one entry lives inside it,
-in its own `docs/`: the [derivation behind `tmm/`](tmm/docs/physics.md) and
-the [derivation behind `hopfield/`](hopfield/docs/model.md).
+in its own `docs/`: the derivations behind [`tmm/`](tmm/docs/physics.md),
+[`hopfield/`](hopfield/docs/model.md) and [`mlp/`](mlp/docs/model.md).
 
 ## Anatomy of an entry
 

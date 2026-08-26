@@ -16,6 +16,8 @@ and then contrasts three step rules that are handed exactly the same gradient.
 ## Layout
 
 ```
+docs/model.md         the derivation, from the phenomenon down
+docs/figures/         the four figures it argues from — tracked, unlike out/
 model.py              the domain: forward map, losses, and the gradient
 methods/
   sgd.py              take the gradient, scaled
@@ -26,6 +28,7 @@ experiments/
   circles.py          the original task, three step rules
   conditioning.py     what a badly shaped landscape costs
   initialisation.py   where the 2024 initialiser stops working
+  gradient_cost.py    why backpropagation exists: O(1) passes, not O(P)
 tests/
   test_model.py           domain laws, no optimiser involved
   test_methods.py         the contract, run against every method
@@ -44,6 +47,10 @@ problem becomes easy — and the question is how to find the parameters, given
 that you can only measure how wrong you currently are.
 
 ## 2. The equations
+
+Derived from the problem downwards — what the family is for, why finite
+differences is the wrong answer, the scale analysis and where it all stops —
+in [`docs/model.md`](docs/model.md).
 
 A network is a composition of affine maps and nonlinearities:
 
@@ -256,6 +263,7 @@ uv run pytest mlp                                     # 62 tests
 uv run python mlp/experiments/circles.py
 uv run python mlp/experiments/conditioning.py         # ~40 s
 uv run python mlp/experiments/initialisation.py
+uv run python mlp/experiments/gradient_cost.py        # ~5 s, redraws docs/figures/
 ```
 
 ## What this sets up
