@@ -428,8 +428,8 @@ over patterns, one pass with no revisiting.
 
 Any function of two bipolar variables can be written
 $f(a,b) = c_0 + c_1 a + c_2 b + c_3\thinspace ab$, since $a^2 = b^2 = 1$
-kills everything else. Locality allows all four terms. Symmetry in $i
-\leftrightarrow j$ forces $c_1 = c_2$. Invariance under $p \to -p$ kills $c_1$
+kills everything else. Locality allows all four terms.
+Symmetry in $i \leftrightarrow j$ forces $c_1 = c_2$. Invariance under $p \to -p$ kills $c_1$
 and $c_2$ entirely. The constant $c_0$ shifts every coupling equally and
 stores nothing. **One term survives.**
 
@@ -488,8 +488,8 @@ part company and the guarantee evaporates. It is not a rounding concern:
   taking downhill moves and freezes. That is a latch, not a memory.
 - $W_{kk} \lt 0$ biases it *against* itself. Measured with $W_{kk} = -2$ on a
   random symmetric $W$: asynchronous updates raise the energy and keep raising
-  it, exactly as $\Delta E = -\Delta s_k g_k$ predicts once $\mathrm{sign}(h_k)
-  \neq \mathrm{sign}(g_k)$.
+  it, exactly as $\Delta E = -\Delta s_k g_k$ predicts once
+  $\mathrm{sign}(h_k) \neq \mathrm{sign}(g_k)$.
 
 **Symmetry.** Drop it and the derivation above fails at the first line: the two
 cross terms no longer combine. The dynamics follows $W$, the energy only ever
@@ -821,7 +821,7 @@ is a test in [`../tests/`](../tests/).
 | Energy | $E = -\tfrac12\thinspace s^{\mathsf T}Ws$ |
 | Hebbian couplings | $W = \tfrac1N\sum_{\mu}p^{\mu}(p^{\mu})^{\mathsf T}$, $W_{ii}=0$ |
 | Single-unit flip | $\Delta E = -\thinspace\Delta s_k\thinspace g_k$, $g_k = \sum_{j\neq k}W_{kj}s_j$ |
-| An actual flip | $\Delta E = -2\thinspace|g_k| \lt 0$, strictly |
+| An actual flip | $\Delta E = -2\thinspace\lvert g_k\rvert \lt 0$, strictly |
 | Field on a stored pattern | $h_i p^{\nu}_i = 1 - 1/N + \text{crosstalk}$ |
 | Crosstalk s.d. | $\sqrt{(P-1)/N} \simeq \sqrt{\alpha}$ |
 | One-step error rate | $Q\left(1/\sqrt{\alpha}\right)$ |
