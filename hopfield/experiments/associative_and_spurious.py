@@ -4,15 +4,15 @@ Reproduces the third and fourth results of the class activity.
 
   1. Associative recall: feed a pattern the network has never seen but which
      resembles a stored one. In class this was a photo of a different cat
-     recovering the stored cat.
+     recovering the stored cat; here it is the letter N, which shares both
+     uprights with the stored H.
 
   2. Spurious attractors: the network always stops somewhere, because every
      local minimum of E is a fixed point whether anyone stored it or not.
 
 What actually comes out is more interesting than the script expected, and the
 numbers below are reported as they land rather than as they were meant to:
-the near-miss ring does NOT recover the stored ring, and the unrelated
-checkerboard lands exactly on its mirror image. See the README.
+see the README for what actually happens.
 """
 
 import sys
@@ -29,16 +29,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import model
 import solve
-from patterns import NAMES, SHAPE, as_pattern, checker, library, _grid
+from patterns import NAMES, NEAR_MISS, SHAPE, as_pattern, checker, glyph, library
 
 SEED = 0
 
 
-def ring_variant():
-    """A ring, but not the stored one: shifted and differently proportioned."""
-    x, y = _grid()
-    r = np.hypot(x - 0.12, y + 0.08)
-    return as_pattern((r > 0.30) & (r < 0.72))
+def near_miss():
+    """A letter that was never stored, and looks like one that was.
+
+    N overlaps the stored H at +0.78 -- they share both uprights and differ
+    only in the bar. If associative recall works the way it is advertised,
+    this should come back as H.
+    """
+    return as_pattern(glyph(NEAR_MISS))
 
 
 def report(weights, patterns, probe, label):
@@ -61,9 +64,9 @@ def main():
     weights = model.hebbian_weights(patterns)
 
     probes = [
-        ("ring variant (never stored)", ring_variant()),
-        ("checkerboard (unrelated)", as_pattern(checker())),
-        ("sign(cross + ring + diagonals)",
+        (f"{NEAR_MISS} — never stored, looks like H", near_miss()),
+        ("checkerboard — genuinely unrelated", as_pattern(checker())),
+        ("sign(M + A + T)",
          model.update_rule(patterns[:3].sum(axis=0), patterns[0])),
     ]
 

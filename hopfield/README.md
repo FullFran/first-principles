@@ -23,7 +23,7 @@ methods/
   synchronous.py      all units at once — faster, no guarantee
 solve.py              termination: sweep until fixed point or cycle
 experiments/
-  recall.py                 store four glyphs, hand one back corrupted
+  recall.py                 store M A T H, hand one back corrupted
   associative_and_spurious.py   what it does that nobody asked for
   capacity.py               error against load, three network sizes
   landscape.py              the measurements behind the derivation's figures
@@ -120,42 +120,56 @@ energies, and reconstruction from 25% noise:
 
 ```
    pattern       energy        E/N
-     cross      -320.50    -0.5564
-      ring      -310.11    -0.5384
- diagonals      -319.22    -0.5542
-      bars      -299.39    -0.5198
-random state      -0.18    -0.0003   (mean of 200)
+         M      -336.25    -0.5838
+         A      -330.82    -0.5743
+         T      -305.82    -0.5309
+         H      -362.36    -0.6291
+random state       0.03     0.0000   (mean of 200)
 
    pattern   overlap in  overlap out   sweeps           dE
-     cross        0.500        1.000        2      -239.67
-      ring        0.500        1.000        2      -231.42
- diagonals        0.500        1.000        2      -230.42
-      bars        0.500        1.000        2      -224.06
+         M        0.500        1.000        2      -258.90
+         A        0.500        1.000        2      -244.76
+         T        0.500        1.000        2      -233.68
+         H        0.500        1.000        2      -271.28
 ```
 
-A quarter of the bits wrong, and every pattern comes back exactly in two
-sweeps. Stored states sit at E/N ≈ −0.55 while a random state sits at ≈ 0 —
-the memories really are the valleys.
+A quarter of the bits wrong — enough that the letters are unreadable — and
+every one comes back exactly, in two sweeps. Stored states sit at E/N ≈ −0.58
+while a random state sits at 0.0000: the memories really are the valleys.
+
+The patterns are letters on purpose, and picking them took measuring. The
+first version used abstract shapes — a ring, a cross, diagonal bars — which
+are balanced and reproducible and say nothing to a reader, so a figure of one
+recovered from noise demonstrates nothing anyone can check by eye. Letters are
+recognisable and **correlated by construction**, because they share a
+background: `FRAN` and `AENX` both recall 0 of 4 from 25% noise, and the least
+correlated four-letter set in the alphabet manages 2. `MATH` recalls 4 of 4 up
+to 35% noise across six seeds. Most sets do not work.
 
 **[`associative_and_spurious.py`](experiments/associative_and_spurious.py)** —
 and here the script did not get what it expected, which turned out to be the
 more interesting outcome:
 
 ```
-ring variant (never stored)     -> settles at overlap +0.715 with ring   SPURIOUS
-checkerboard (unrelated)        -> settles exactly on −ring              a memory
-sign(cross+ring+diagonals)      -> flows to ring                         a memory
+N — never stored, looks like H  -> settles at +0.889 with H, E = -361.47  SPURIOUS
+checkerboard — unrelated        -> settles exactly on −A                  a memory
+sign(M + A + T)                 -> settles at +0.628 with both A and T    SPURIOUS
 ```
 
-The near-miss ring does **not** recover the stored ring: it stops in a nearby
-valley that is not a memory. The unrelated checkerboard lands exactly on the
-*mirror* of a memory, which is the sign symmetry from the domain tests showing
-up in practice. And the textbook three-pattern mixture is not stable here at
-all — it flows to `ring`.
+**The near-miss does not recover the memory.** Feed the network an `N` — which
+shares both uprights with the stored `H` and differs only in the bar — and it
+settles on something 0.889 similar to `H` and not equal to it, in a valley at
+−361.47 against the stored `H`'s −362.36. Almost as deep, and wrong. The
+figure shows it plainly: what comes out is visibly an H with the diagonal
+still eating into it.
 
-That last one is not a bug, it is correlation. The glyphs share a lot of
-structure, which reshapes the landscape. With uncorrelated patterns the
-mixture behaves as the theory says, and the script checks it in the same run:
+The unrelated checkerboard lands exactly on **−A**, the mirror of a memory,
+which is the sign symmetry from the domain tests showing up as behaviour.
+
+And the textbook three-pattern mixture is stable, as theory says it should be.
+That is a change from the abstract-glyph version of this entry, where it
+collapsed into a memory instead — those shapes were correlated enough to
+reshape the landscape. The script still runs the uncorrelated control:
 
 ```
 random patterns: mixture is a fixed point -> True
@@ -199,7 +213,7 @@ transition sharpens with size, as a phase transition should.
 
 | Boundary | What happens |
 |---|---|
-| Correlated patterns | Recall degrades well before α_c; the glyph experiment above shows it |
+| Correlated patterns | Recall degrades well before α_c; three of four letter sets tried recall nothing at all |
 | Load above ≈ 0.138 | Recall breaks down — measured, not assumed |
 | Dense `W` | N² floats. The 2024 version used 75×75 images: 5625² ≈ 253 MB of couplings |
 | Synchronous updates | No energy guarantee; may oscillate with period 2 |
@@ -226,10 +240,12 @@ dynamics were unaffected**. What it changes is the energy value, so energies
 were not comparable between networks trained on different numbers of patterns
 — which is exactly what the capacity experiment does.
 
-The patterns here are generated glyphs rather than the original photographs:
-those cannot go in a public repo, and photographs are strongly biased toward
-one colour, which correlates the patterns and degrades recall for reasons that
-have nothing to do with the model.
+The patterns here are letters written out as literal art rather than the
+original photographs: those cannot go in a public repo, and photographs are
+strongly biased toward one colour, which correlates the patterns and degrades
+recall for reasons that have nothing to do with the model. Letters have the
+same problem in a milder form, which is why the set had to be searched for
+rather than chosen — see §4.
 
 ## Run it
 

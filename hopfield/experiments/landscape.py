@@ -36,7 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import model
 import solve
-from patterns import NAMES, SHAPE, as_pattern, library, _grid
+from patterns import NAMES, NEAR_MISS, SHAPE, as_pattern, glyph, library
 
 FIGURES = Path(__file__).resolve().parents[1] / "docs" / "figures"
 ALPHA_C = 0.138
@@ -220,10 +220,9 @@ def parity(sizes=(20, 40, 60, 100, 200, 350, 576), count=4, trials=25, states=25
 
 # --- 4. convergence is not correctness --------------------------------------
 
-def ring_variant():
-    x, y = _grid()
-    r = np.hypot(x - 0.12, y + 0.08)
-    return as_pattern((r > 0.30) & (r < 0.72))
+def near_miss():
+    """The letter N, never stored, overlapping the stored H at +0.78."""
+    return as_pattern(glyph(NEAR_MISS))
 
 
 def spurious(enumerate_size=16, counts=(1, 2, 3, 4, 5), trials=6):
@@ -231,14 +230,14 @@ def spurious(enumerate_size=16, counts=(1, 2, 3, 4, 5), trials=6):
     many such places there are."""
     patterns = library()
     weights = model.hebbian_weights(patterns)
-    probe = ring_variant()
+    probe = near_miss()
     settled = solve.relax(weights, probe, method="asynchronous", seed=0)
-    stored_ring = model.energy(weights, patterns[1])
+    stored_h = model.energy(weights, patterns[3])
     print("\n4a. A CONFIDENT WRONG ANSWER")
-    print(f"  probe: a ring that was never stored")
+    print(f"  probe: the letter {NEAR_MISS}, never stored")
     print(f"  settles at E = {settled.energies[-1]:.2f} after {settled.sweeps} sweeps")
-    print(f"  the stored ring sits at E = {stored_ring:.2f}")
-    print(f"  overlap with the stored ring: {model.overlap(settled.state, patterns[1]):+.3f}")
+    print(f"  the stored H sits at E = {stored_h:.2f}")
+    print(f"  overlap with the stored H: {model.overlap(settled.state, patterns[3]):+.3f}")
     print(f"  energy fell monotonically: "
           f"{bool(np.all(np.diff(settled.energies) <= 1e-9))}")
 
@@ -270,11 +269,11 @@ def spurious(enumerate_size=16, counts=(1, 2, 3, 4, 5), trials=6):
     spec = fig.add_gridspec(1, 4, width_ratios=[1, 1, 1, 2.0], wspace=0.55)
 
     glyphs = (
-        (probe, "the probe", "a ring nobody stored", None, "0.25"),
+        (probe, "the probe", f"{NEAR_MISS}, never stored", None, "0.25"),
         (settled.state, "settles here", "a valley that is not a memory",
          settled.energies[-1], MEASURED),
-        (patterns[1], "the stored ring", "deeper, never reached",
-         stored_ring, THEORY),
+        (patterns[3], "the stored H", "deeper, never reached",
+         stored_h, THEORY),
     )
     for column, (state, title, caption, energy, colour) in enumerate(glyphs):
         panel = fig.add_subplot(spec[0, column])

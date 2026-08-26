@@ -201,7 +201,7 @@ The rule from the book: **write a number down before you read the next
 section.** The learning is in the gap between your number and the real one,
 and the gap does not exist if you did not commit.
 
-> 1. The entry stores $24\times24$ glyphs, so $N = 576$ units. **How many
+> 1. The entry stores $24\times24$ letters, so $N = 576$ units. **How many
 >    patterns fit before recall breaks?** Ten? Five hundred? Half a million?
 > 2. You want to store one-megapixel images this way, so $N = 10^{6}$.
 >    **How much RAM does $W$ take, and how many images fit in it?** Compare
@@ -865,30 +865,40 @@ a 25%-corrupted probe returns the memory exactly.
 N = 576 units, P = 4 patterns, load = 0.0069
 
    pattern       energy        E/N
-     cross      -320.50    -0.5564
-      ring      -310.11    -0.5384
- diagonals      -319.22    -0.5542
-      bars      -299.39    -0.5198
+         M      -336.25    -0.5838
+         A      -330.82    -0.5743
+         T      -305.82    -0.5309
+         H      -362.36    -0.6291
 
-random state      -0.18    -0.0003   (mean of 200)
+random state       0.03     0.0000   (mean of 200)
 
    pattern   overlap in  overlap out   sweeps           dE
-     cross        0.500        1.000        2      -239.67
-      ring        0.500        1.000        2      -231.42
- diagonals        0.500        1.000        2      -230.42
-      bars        0.500        1.000        2      -224.06
+         M        0.500        1.000        2      -258.90
+         A        0.500        1.000        2      -244.76
+         T        0.500        1.000        2      -233.68
+         H        0.500        1.000        2      -271.28
 ```
 
 Every pattern returns exactly, in two sweeps, from a probe with a quarter of
-its bits wrong. Random states sit at $E/N = -0.0003$ against the memories'
-$-0.55$: the memories really are the valleys, and everything else really is
-the plain.
+its bits wrong — enough noise that the letters are unreadable to a human, as
+the figure in the entry README shows. Random states sit at $E/N = 0.0000$
+against the memories' $-0.58$: the memories really are the valleys, and
+everything else really is the plain.
 
-**But the napkin says $-0.4991$ and the glyphs are at $-0.52$ to $-0.56$.**
-The wells are *deeper* than theory predicts, and the reason is that the glyphs
-are correlated — pairwise overlaps run from $-0.29$ to $+0.17$ rather than the
-$\pm 1/\sqrt{N} \approx 0.04$ of random patterns. Correlated patterns
-reinforce each other's couplings and dig deeper holes.
+**But the napkin says $-0.4991$ and the letters are at $-0.53$ to $-0.63$.**
+The wells are *deeper* than theory predicts, and the reason is that letters
+are correlated — pairwise overlaps run from $+0.02$ to $+0.42$ rather than the
+$\pm 1/\sqrt{N} \approx 0.04$ of random patterns, because every glyph shares a
+background with every other. Correlated patterns reinforce each other's
+couplings and dig deeper holes.
+
+That correlation is not a nuisance to be engineered away; it is what makes
+these patterns worth using. **Three of the four letter sets tried recall
+nothing at all** — `FRAN` and `AENX` both return 0 of 4 memories from 25%
+noise, and the least correlated four-letter set in the alphabet manages 2.
+`MATH` returns 4 of 4 up to 35% noise across six seeds. The entry's own
+prediction, that correlation wrecks Hebbian recall, is what decided which
+letters it could use.
 
 Deeper holes, and worse recall. That is not a contradiction and it is the
 subject of §10.3. Checked against uncorrelated patterns, where the napkin is
@@ -930,56 +940,59 @@ than a gradual degradation.
 Prediction: a probe resembling a stored pattern recovers it, and
 $\mathrm{sign}(p^1+p^2+p^3)$ is a stable state nobody stored.
 
-Both predictions failed, and the failures are the most instructive output in
-the entry.
+The second held. The first did not, and the way it failed is the most
+instructive output in the entry.
 
 ```
-ring variant (never stored)
-  overlap: cross=+0.451  ring=+0.715  diagonals=-0.076  bars=-0.465
-  closest: ring (+0.715)   sweeps: 2   E: -268.06
+N — never stored, looks like H
+  overlap: M=+0.528  A=+0.410  T=+0.160  H=+0.889
+  closest: H (+0.889)   sweeps: 2   E: -361.47
   landed on a stored memory: NO — spurious
 
-checkerboard (unrelated)
-  closest: ring (-1.000)   sweeps: 2   E: -310.11
+checkerboard — genuinely unrelated
+  closest: A (-1.000)   sweeps: 2   E: -330.82
   landed on a stored memory: yes
 
-sign(cross + ring + diagonals)
-  closest: ring (+1.000)   sweeps: 3   E: -310.11
-  landed on a stored memory: yes
+sign(M + A + T)
+  overlap: M=+0.392  A=+0.628  T=+0.628  H=+0.337
+  closest: A (+0.628)   sweeps: 1   E: -302.51
+  landed on a stored memory: NO — spurious
 ```
 
-**The near-miss does not recover the memory.** A ring that is shifted and
-differently proportioned stops at overlap $+0.715$ — recognisably ring-like,
-not the ring — in a valley at $E = -268.06$ against the stored ring's
-$-310.11$. A shallower minimum, sitting between the probe and the memory,
-catching the ball on the way down. The network answered confidently and it
-answered wrong, and nothing in the run indicates that: it converged, the energy
-fell monotonically, the state is a genuine fixed point.
+**The near-miss does not recover the memory.** The letter `N` shares both
+uprights with the stored `H` and differs only in the bar. Hand it over and the
+network stops at overlap $+0.889$ — recognisably H-like, not the H — in a
+valley at $E = -361.47$ against the stored H's $-362.36$. **Almost exactly as
+deep, and wrong.** A shallower minimum sitting between the probe and the
+memory, catching the ball on the way down.
+
+The network answered confidently and it answered wrong, and nothing in the run
+says so: it converged, the energy fell monotonically, the state is a genuine
+fixed point. The figure shows what a reader can check that a number cannot —
+what comes out is visibly an H with the diagonal still eating into it.
 
 **The unrelated probe lands exactly on $-p$.** The checkerboard settles on the
-mirror of the ring at identical energy, which is the sign symmetry from §6.2
-showing up as behaviour rather than as a test assertion. Every memory you store
-comes with an anti-memory you did not, at the same depth, and there is no
-mechanism in the model that prefers one.
+mirror of `A` at identical energy, which is the sign symmetry from §6.2 showing
+up as behaviour rather than as a test assertion. Every memory you store comes
+with an anti-memory you did not, at the same depth, and there is no mechanism
+in the model that prefers one.
 
-**The textbook mixture state is not stable here** — it flows to `ring`. That
-one is correlation again, and the script checks the control in the same run:
+**The mixture state is stable**, as theory says. That is a change from the
+version of this entry built on abstract shapes, where it collapsed into a
+memory instead: those were correlated differently, enough to reshape the
+landscape and break a textbook result. The control is run either way:
 
 ```
 random patterns: mixture is a fixed point -> True
 overlaps with the three memories: +0.490  +0.472  +0.545
 ```
 
-With uncorrelated patterns the mixture behaves exactly as theory says. The
-glyphs share too much structure, and the landscape is reshaped enough that a
-textbook result stops holding.
-
 ### 10.4 How many spurious states are there?
 
-![Left: the probe, the state it settles on, and the stored ring it never
-reaches, with their energies. Right: fixed points found by exhaustive
-enumeration at N = 16, split into stored memories with their mirrors and
-states nobody stored.](figures/spurious.png)
+![Left: the letter N handed to the network, the state it settles on, and the
+stored H it never reaches, with their energies. Right: fixed points found by
+exhaustive enumeration at N = 16, split into stored memories with their
+mirrors and states nobody stored.](figures/spurious.png)
 
 **What to conclude:** the run converged, the energy fell monotonically, the
 final state is a genuine fixed point — and the answer is wrong. Nothing in the
