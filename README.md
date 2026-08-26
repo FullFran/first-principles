@@ -41,12 +41,41 @@ each, or they stay archived where they are.
 | [Hopfield network](hopfield/) | ✓ | ✓ | ✓ | `Optimization-Algorithms/4` (2024) |
 | [Multilayer perceptron](mlp/) | ✓ | ✓ | ✓ | `Point_classifier/redNumpy.ipynb` (2024) |
 | [Photon transport](photon-transport/) | ✓ | ✓ | ✓ | `Physics-simulations/Iter_rad_material` (2024) |
+| [Sampling an energy landscape](sampling/) | ✓ | ✓ | ✓ | new — the bridge the other three point at |
 
 **L1 derive** — I can reconstruct it from the equations.
 **L2 implement** — I can write a minimal working version.
 **L3 experiment** — I can modify it and predict what happens.
 
 A row only gets a mark when it is true today, not when it once was.
+
+## Series
+
+The map is alphabetical and says nothing about what leads where. These do.
+
+**Monte Carlo** — estimating by throwing darts, and the $1/\sqrt{N}$ it costs
+> [`photon-transport`](photon-transport/) → [`sampling`](sampling/)
+
+**Energy landscapes** — remembering, optimising and sampling are all descent
+> [`hopfield`](hopfield/) → [`sampling`](sampling/) → *diffusion, not built*
+
+**Learning a function** — gradients, and what you do once you have them
+> [`mlp`](mlp/) → *diffusion, not built*
+
+**Waves in matter**
+> [`tmm`](tmm/)
+
+Notice `sampling` appears twice and `diffusion` twice. **That is the reason
+these are a view and not a directory tree.** Almost every entry belongs to two
+or three of these — `hopfield` is a neural network, a spin glass and an
+optimiser; `photon-transport` is Monte Carlo and radiation physics — and a
+folder forces one parent and hides the rest. The connection worth showing is
+often the one across the tree, not down it, which is the whole reason the same
+mathematics keeps turning up in unrelated places.
+
+So the directories stay flat and one entry can be in as many series as it
+earns. Rule 1 applies here too: a series is allowed to be short, and it is not
+allowed to lie, so anything not built says so.
 
 Repo-wide write-ups live in [`docs/`](docs/) — right now the [physics/numerics
 split](docs/architecture.md). Anything specific to one entry lives inside it,
@@ -132,6 +161,7 @@ uv run pytest tmm                                  # one entry
 uv run pytest hopfield
 uv run pytest mlp
 uv run pytest photon-transport
+uv run pytest sampling
 ./run-tests                                        # all of them, one process each
 ```
 
