@@ -27,6 +27,8 @@ import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+FIGURES = Path(__file__).resolve().parents[1] / "docs" / "figures"
+
 from methods import ALL as METHODS
 
 RESOLUTION = 160
@@ -102,9 +104,9 @@ def main():
                  fontsize=11.5, y=1.0)
     fig.tight_layout()
 
-    out = Path(__file__).parent / "out"
-    out.mkdir(exist_ok=True)
-    fig.savefig(out / "radiograph.png", dpi=140, bbox_inches="tight")
+    FIGURES.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGURES / "radiograph.png", dpi=140, facecolor="white",
+                bbox_inches="tight", pad_inches=0.22)
 
     row = RESOLUTION // 2 + int(0.22 / (2 * FIELD) * RESOLUTION)
     fig2, ax = plt.subplots(figsize=(8.2, 4.0))
@@ -115,8 +117,9 @@ def main():
     ax.set_title("One row through the upper inclusion", fontsize=11, pad=10)
     ax.legend(frameon=False, fontsize=9)
     fig2.tight_layout()
-    fig2.savefig(out / "radiograph_profile.png", dpi=140, bbox_inches="tight")
-    print(f"\nfigures -> {out}/radiograph.png, {out}/radiograph_profile.png")
+    fig2.savefig(FIGURES / "radiograph_profile.png", dpi=140, facecolor="white",
+                bbox_inches="tight", pad_inches=0.22)
+    print(f"\nfigures -> docs/figures/radiograph.png, docs/figures/radiograph_profile.png")
 
 
 if __name__ == "__main__":

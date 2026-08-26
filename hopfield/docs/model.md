@@ -169,7 +169,34 @@ Function* for the statistical mechanics; MacKay, *Information Theory,
 Inference and Learning Algorithms*, ch. 42 for the information-theoretic view
 and the best single page on why capacity is what it is.
 
-### A note on the history
+### 2.6 History
+
+Verification levels follow the convention of the book: **A** is documented,
+ideally from a primary source; **B** is a reconstruction; **C** is a story
+told everywhere that I could not source.
+
+::: **A physicist who went to the wrong conference** · *Verification: A —
+Hopfield has told it in several interviews and in the 1982 paper's framing.*
+
+John Hopfield did not come from biology. He was a condensed-matter theorist:
+he had worked at Bell Labs, and in 1958 he had introduced the **polariton** —
+the quasiparticle you get when light couples to a lattice vibration strongly
+enough that neither one is really itself any more. That is about as far from
+neuroscience as a career gets.
+
+What he brought across was not a technique but a *reflex*. A physicist looking
+at a large system of interacting units asks a specific question — what
+quantity does this thing minimise? — and that question is not natural to
+someone trained on neurons. Biologists had been building neural models for
+decades. The energy function is what a physicist would look for and nobody
+else would.
+
+The 1982 paper is titled *Neural networks and physical systems with emergent
+collective computational abilities*, and the phrase doing the work is
+**physical systems**. It is an argument that a brain can be studied the way a
+magnet is.
+
+::: **The idea was already there, in the wrong shape** · *Verification: A.*
 
 Three things in this story are worth knowing because they repeat.
 
@@ -190,8 +217,25 @@ could compute the capacity exactly using replica theory built for a completely
 different problem. Recognising that your problem is somebody else's solved
 problem is worth more than most original work.
 
-**Forty-two years to a Nobel Prize.** The field was declared dead at least
-twice in between.
+**Forty-two years to a Nobel Prize.** The 2024 Physics prize went to Hopfield
+and Hinton, and the field was declared dead at least twice in between —
+after Minsky and Papert's *Perceptrons* in 1969, and again in the late
+eighties when the promises outran the hardware.
+
+::: **What the prize was actually for** · *Verification: A — the Nobel
+committee's scientific background document.*
+
+It is worth being precise about the 2024 citation, because it is often
+reported as a prize for artificial intelligence and it is not. It is for
+**using tools from statistical physics to build machines that learn** — which
+is the direction of travel this whole entry documents. The committee's own
+summary of Hopfield's half is the energy function and the associative memory
+in this document; Hinton's is the Boltzmann machine, which is that same energy
+at $T \gt 0$.
+
+A physics prize for a computer science result, awarded because the physics was
+the load-bearing part. Which is either a vindication or a category error
+depending on who you ask, and the argument is worth having.
 
 ---
 

@@ -86,11 +86,43 @@ gets a chance — 35% of the light. One quarter-wave layer of silicon nitride
 takes that to 0.02% at the design wavelength. That single layer is worth more
 than most of the process optimisation downstream of it.
 
-The history is a good lesson in noticing things. Rayleigh (1886) observed that
-*tarnished* glass transmitted more light than fresh glass — the opposite of
-what anyone would guess. Taylor patented deliberate chemical tarnishing in
-1904 but never made it reproducible. Smakula at Zeiss patented evaporated
-coatings in 1935, and the modern coating industry starts there.
+The history is a good lesson in noticing things, and it is worth telling
+properly. Verification levels follow the convention of the book: **A** is
+documented, ideally from a primary source; **B** is a reconstruction; **C** is
+a story told everywhere that I could not source.
+
+::: **The glass that worked better once it was ruined** · *Verification: A.*
+
+In 1886 Rayleigh noticed something that ought to have been a mistake:
+**tarnished** glass transmitted *more* light than fresh glass. Old lenses, left
+in damp rooms, had grown a chemical film — and they were brighter than the ones
+that had been looked after.
+
+That is exactly backwards from every intuition about optics. Dirt should scatter
+and absorb. The reason it does not is [§4](#4-why-the-naive-answer-fails): the
+film is a fraction of a wavelength thick, so its two surfaces reflect *out of
+phase* and cancel. There is nothing being absorbed and nothing being cleaned;
+two reflections are destroying each other.
+
+Taylor patented deliberate chemical tarnishing in 1904 and never made it
+reproducible — you cannot control a hundred nanometres with a chemical bath.
+Smakula at Zeiss patented evaporated coatings in 1935, and the modern coating
+industry starts there, because vacuum deposition is the first process that can
+hit a thickness of a few hundred atoms on purpose ([§8.1](#81-the-quarter-wave-delta--pi2)).
+
+::: **And it was a military secret** · *Verification: B — widely reported, and
+I have not seen the classification order itself.*
+
+The 1935 Zeiss patent was reportedly classified by Germany, for a reason that
+sounds odd until you count surfaces. A coated lens loses 1% per surface instead
+of 4%, and a rangefinder or a periscope has a dozen of them: the difference is
+between 59% of the light arriving and 89%
+([§2.1](#21-removing-a-reflection-anti-reflection-coatings)). At dusk, that is
+the difference between seeing a ship and not.
+
+Anti-reflection coating is a genuine case of interference physics as a weapon,
+and of the same equations being worth classifying in one decade and printing in
+an undergraduate textbook in the next.
 
 ### 2.2 Making a perfect reflection (Bragg mirrors / DBRs)
 

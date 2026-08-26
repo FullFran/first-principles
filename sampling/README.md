@@ -16,6 +16,8 @@ known amount. 342 lines of core.
 ## Layout
 
 ```
+docs/distribution.md  the derivation, from the phenomenon down
+docs/figures/         the figures it argues from — tracked, unlike out/
 distribution.py       the domain: energies, gradients, the density, closed forms
 methods/
   metropolis.py       propose and accept on a ratio — exact, and a random walk
@@ -49,6 +51,10 @@ probability.
 Every method here is a way of living with exactly that.
 
 ## 2. The equations
+
+Derived from the problem downwards — what Markov chains are, where they came
+from (an argument about free will), detailed balance, ergodicity and where it
+all stops — in [`docs/distribution.md`](docs/distribution.md).
 
 **Metropolis.** Propose $y$, accept it with
 

@@ -111,21 +111,55 @@ multiple of the cost of evaluating the function.** Forward mode gives you the
 derivative of $P$ outputs with respect to one input for the same price. Which
 one you want is decided by the shape of your problem, not by fashion.
 
-### 2.4 Where the credit actually lies
+### 2.4 History
 
-The history is a good lesson in how ideas fail to travel.
+Verification levels follow the convention of the book: **A** is documented,
+ideally from a primary source; **B** is a reconstruction; **C** is a story
+told everywhere that I could not source.
 
-Reverse accumulation was published by Seppo Linnainmaa in 1970, in a Finnish
-master's thesis, as a general method for the accumulated rounding error of an
-algorithm. Paul Werbos applied it to networks in his 1974 Harvard thesis.
-Neither got traction. The technique became famous with Rumelhart, Hinton and
-Williams in 1986, sixteen years after Linnainmaa, and the name that stuck is
-"backpropagation" rather than his.
+::: **Published three times before anyone noticed** · *Verification: A —
+Schmidhuber's annotated history (2015) traces the chain and the primary
+sources are all extant.*
+
+Reverse accumulation was published by **Seppo Linnainmaa in 1970**, in a
+Finnish master's thesis, and it was not about learning at all. It was a
+general method for tracking the accumulated rounding error of an algorithm —
+you need the sensitivity of the output to every intermediate quantity, and the
+efficient way to get it is to sweep backwards. The chain rule, in the
+direction that pays, four years before anyone applied it to a network.
+
+**Paul Werbos** applied it to networks in his 1974 Harvard PhD thesis. It went
+nowhere. He has said the reason was that after *Perceptrons* nobody would
+listen to a neural-network argument at all.
+
+The technique became famous with **Rumelhart, Hinton and Williams in 1986**,
+sixteen years after Linnainmaa, in four pages in *Nature*.
 
 The lesson is not that the 1986 paper was undeserving — it made the idea
-usable and showed what it was for. It is that **an idea published in the wrong
-field, in the wrong language, at the wrong time is not yet an idea anyone
-has**, and that the gap between the two can be sixteen years.
+usable, showed what it was for, and demonstrated that the hidden layers
+learned *representations*, which is the part that mattered. It is that **an
+idea published in the wrong field, in the wrong language, at the wrong time is
+not yet an idea anybody has**, and that the gap between the two can be sixteen
+years.
+
+::: **A four-page paper and a twenty-eight-year winter** · *Verification: B —
+the causal claim about* Perceptrons *is contested by historians, and the
+chronology is not.*
+
+The standard story is that Minsky and Papert's *Perceptrons* (1969) proved a
+single-layer network cannot compute XOR, killed the field, and that
+backpropagation revived it in 1986.
+
+The chronology is right. The causation is disputed — Minsky and Papert were
+explicit that multi-layer networks were not covered by their result, funding
+patterns are messier than the story, and several historians have pushed back
+on the "book killed a field" reading.
+
+But something did stop, and the *mathematical* content is unarguable and is in
+this entry: a composition of affine maps is affine, so depth without a
+nonlinearity buys nothing
+([§6.1](#61-the-forward-map)). XOR needs a curved boundary. Everything after
+1986 is what you can do once you can train the layer in between.
 
 ### Papers worth reading
 

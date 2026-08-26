@@ -21,6 +21,8 @@ import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+FIGURES = Path(__file__).resolve().parents[1] / "docs" / "figures"
+
 import physics
 import solve
 
@@ -66,10 +68,10 @@ def main():
     ax.legend(frameon=False, fontsize=8.5)
     fig.tight_layout()
 
-    out = Path(__file__).parent / "out"
-    out.mkdir(exist_ok=True)
-    fig.savefig(out / "beer_lambert.png", dpi=140, bbox_inches="tight")
-    print(f"figure -> {out / 'beer_lambert.png'}")
+    FIGURES.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGURES / "beer_lambert.png", dpi=140, facecolor="white",
+                bbox_inches="tight", pad_inches=0.22)
+    print(f"figure -> docs/figures/beer_lambert.png")
 
 
 if __name__ == "__main__":

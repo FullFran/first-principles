@@ -16,6 +16,8 @@ photons. 282 lines of core.
 ## Layout
 
 ```
+docs/physics.md       the derivation, from the phenomenon down
+docs/figures/         the figures it argues from — tracked, unlike out/
 physics.py            the domain: emission, free paths, geometry, Beer-Lambert
 methods/
   analog.py           sample a free path; the photon gets through or it does not
@@ -47,7 +49,9 @@ building: you can check the simulation against something.
 
 ## 2. The equations
 
-Three ideas and the model is complete.
+Three ideas and the model is complete. Derived from the problem downwards —
+what this is for, where Monte Carlo came from, the order-of-magnitude
+estimates, and where it all stops — in [`docs/physics.md`](docs/physics.md).
 
 **Emission into a cone.** The solid angle element is
 $d\Omega = \sin\theta\thinspace d\theta\thinspace d\phi$, so the flat variable

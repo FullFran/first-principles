@@ -23,6 +23,8 @@ import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+FIGURES = Path(__file__).resolve().parents[1] / "docs" / "figures"
+
 import distribution as dist
 import solve
 
@@ -85,10 +87,10 @@ def main():
     right.legend(frameon=False, fontsize=9)
 
     fig.tight_layout()
-    out = Path(__file__).parent / "out"
-    out.mkdir(exist_ok=True)
-    fig.savefig(out / "gaussian.png", dpi=140, bbox_inches="tight")
-    print(f"\nfigure -> {out / 'gaussian.png'}")
+    FIGURES.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGURES / "gaussian.png", dpi=140, facecolor="white",
+                bbox_inches="tight", pad_inches=0.22)
+    print(f"\nfigure -> docs/figures/gaussian.png")
 
 
 if __name__ == "__main__":
