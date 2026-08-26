@@ -43,6 +43,7 @@ each, or they stay archived where they are.
 | [Photon transport](photon-transport/) | ✓ | ✓ | ✓ | `Physics-simulations/Iter_rad_material` (2024) |
 | [Sampling an energy landscape](sampling/) | ✓ | ✓ | ✓ | new — the bridge the other three point at |
 | [Forest fire](forest-fire/) | ✓ | ✓ | ✓ | new — sibling of [`fire-percolation`](https://github.com/FullFran/fire-percolation) |
+| [Renormalisation](renormalisation/) | ✓ | ✓ | ✓ | new — acts on `forest-fire/` |
 
 **L1 derive** — I can reconstruct it from the equations.
 **L2 implement** — I can write a minimal working version.
@@ -64,7 +65,7 @@ The map is alphabetical and says nothing about what leads where. These do.
 > [`mlp`](mlp/) → *diffusion, not built*
 
 **Critical points** — thresholds, and why the details stop mattering there
-> [`forest-fire`](forest-fire/) → *renormalisation, not built*
+> [`forest-fire`](forest-fire/) → [`renormalisation`](renormalisation/) → *diffusion, not built*
 
 **Waves in matter**
 > [`tmm`](tmm/)
@@ -176,6 +177,7 @@ uv run pytest mlp
 uv run pytest photon-transport
 uv run pytest sampling
 uv run pytest forest-fire
+uv run pytest renormalisation
 ./run-tests                                        # all of them, one process each
 ```
 
