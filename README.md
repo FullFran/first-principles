@@ -40,6 +40,7 @@ each, or they stay archived where they are.
 | [Transfer Matrix Method](tmm/) | ✓ | ✓ | ✓ | `Physics-simulations/Cristal_multicapa` (2024) |
 | [Hopfield network](hopfield/) | ✓ | ✓ | ✓ | `Optimization-Algorithms/4` (2024) |
 | [Multilayer perceptron](mlp/) | ✓ | ✓ | ✓ | `Point_classifier/redNumpy.ipynb` (2024) |
+| [Photon transport](photon-transport/) | ✓ | ✓ | ✓ | `Physics-simulations/Iter_rad_material` (2024) |
 
 **L1 derive** — I can reconstruct it from the equations.
 **L2 implement** — I can write a minimal working version.
@@ -95,7 +96,7 @@ Audited from GitHub, decided by contents rather than by name.
 | Source repo | What's in it | Decision |
 |---|---|---|
 | [`Physics-simulations/Cristal_multicapa`](https://github.com/FullFran/Physics-simulations) | matrix method, multilayer | **done** → [`tmm/`](tmm/) · source archived |
-| `Physics-simulations/Iter_rad_material` | `rayosnew.py`, `unfoton.py` — photon transport by ray tracing | queued — feeds the same intuition as `snow-mcrt` |
+| `Physics-simulations/Iter_rad_material` | `rayosnew.py`, `unfoton.py` — photons through an absorbing slab | **done** → [`photon-transport/`](photon-transport/) |
 | `Physics-simulations/Magnetic Mirrors` | charged particle in a magnetic bottle | queued — Boris pusher from the Lorentz force |
 | [`Optimization-Algorithms/4`](https://github.com/FullFran/Optimization-Algorithms) | `hopfiled.py`, Hopfield over thresholded photos | **done** → [`hopfield/`](hopfield/) |
 | [`Point_classifier`](https://github.com/FullFran/Point_classifier) | `redNumpy.ipynb`, net in pure NumPy | **done** → [`mlp/`](mlp/) · source archived |
@@ -130,6 +131,7 @@ Never an import.
 uv run pytest tmm                                  # one entry
 uv run pytest hopfield
 uv run pytest mlp
+uv run pytest photon-transport
 ./run-tests                                        # all of them, one process each
 ```
 
