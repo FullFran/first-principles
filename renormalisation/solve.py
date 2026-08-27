@@ -51,9 +51,6 @@ def _accepted_options():
     ) - {"size", "rule"}
 
 
-OPTIONS = _accepted_options()
-
-
 @dataclass(frozen=True)
 class Scheme:
     size: int
@@ -92,10 +89,22 @@ class Comparison:
 def _polynomial(size, rule, method, **options):
     if method not in METHODS:
         raise ValueError(f"unknown method {method!r}; available: {sorted(METHODS)}")
-    unknown = sorted(set(options) - OPTIONS)
+    # Read at call time, not frozen at import. The method name two lines up is
+    # checked against the live registry, so checking options against a snapshot
+    # taken when this module happened to be imported would have made a method
+    # registered afterwards accept its own keywords in one check and have them
+    # rejected in the other.
+    accepted = _accepted_options()
+    unknown = sorted(set(options) - accepted)
     if unknown:
+        # The list alone points the wrong way for the mistake that motivated
+        # this check: someone who wrote counting="sampling" reads
+        # "available: draws, seed" and still does not learn that the method is
+        # chosen by an argument rather than an option.
         raise ValueError(
-            f"unknown option(s) {unknown}; available: {sorted(OPTIONS)}")
+            f"unknown option(s) {unknown}; available: {sorted(accepted)}. "
+            f"The counting method is chosen by the `method` argument "
+            f"({sorted(METHODS)}), not by an option.")
     flow.check_block(size)
     flow.check_rule(rule)
     return METHODS[method].polynomial(size, rule, **options)

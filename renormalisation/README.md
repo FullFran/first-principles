@@ -3,12 +3,12 @@
 Zoom out. If the system looks like itself with a different parameter, you have
 a map, and the critical point is where that map stands still. On percolation
 the whole calculation is one polynomial — and for a block of two it is
-$2p^2 - p^4$, whose fixed point is the golden ratio. 293 lines of core.
+$2p^2 - p^4$, whose fixed point is the golden ratio. 419 lines of core.
 
 | | |
 |---|---|
 | **Level** | L1 derive · L2 implement · L3 experiment |
-| **Domain** | [`flow.py`](flow.py) — 178 lines, no block-size sweep in it |
+| **Domain** | [`flow.py`](flow.py) — 190 lines, no block-size sweep in it |
 | **Methods** | [`enumeration.py`](methods/enumeration.py) 25 · [`sampling.py`](methods/sampling.py) 38 |
 | **Tests** | 71, split into domain, contract, and where the methods diverge |
 | **Acts on** | [`forest-fire/`](../forest-fire/), which is where the threshold comes from |
@@ -125,18 +125,28 @@ land in different places — which is the entry rather than a defect.
 | **The plain scheme is stuck with the vertical rule** | differ |
 | **`either` and `both` bracket the true threshold** | differ |
 
-**The last two rows exist because of a bug I wrote while using this entry.**
+**The two rows about options exist because of a bug I wrote while using this
+entry.**
 Every method ends its signature in `**_` on purpose: `solve` hands the same
 options to whichever method is selected, so one call can be pointed at either
 and `enumeration` quietly ignores `draws`. That tolerance is what makes a
 single contract suite writable against both.
 
-It also meant a misspelled keyword reached nothing. Asking for
-`counting="sampling"` — the parameter is `method` — silently enumerated and
-returned 0.472628 where the sampler gives 0.476323. No error, no warning, a
-perfectly plausible number for a question nobody asked. Worse, `drwas=500`
-silently used the default 4000 draws, so an experiment measuring *sampling
-error against sample size* would have measured nothing and said so confidently.
+It also meant a misspelled keyword reached nothing:
+
+```
+scheme(3, "either", counting="sampling", draws=500, seed=0) -> 0.472628
+scheme(3, "either", method="sampling",   draws=500, seed=0) -> 0.476323
+scheme(3, "either")                                         -> 0.472628
+```
+
+The parameter is `method`. Spelled `counting` it fell into `**options`, reached
+nothing, and the call quietly enumerated — the third line, which is the default
+— while looking exactly like the second. No error, no warning, a perfectly
+plausible number for a question nobody asked. Worse, `drwas=500` was swallowed
+the same way and silently used the default 4000 draws, so an experiment
+measuring *sampling error against sample size* would have measured nothing and
+said so confidently.
 
 The fix is not "reject what this method ignores" — that would break the
 tolerance the architecture depends on. The line goes one step out: `solve`
@@ -220,8 +230,9 @@ CELL 3->4   exact fixed point 0.591046
 **The first prediction holds and the second one cannot be measured, which is
 what it predicted about itself.** The scatter ratios are 1.76, 1.73, 1.61 and
 2.58 against the 2.00 that $1/\sqrt{4}$ demands — scattered around it, and a
-variance estimated from twelve seeds is itself good to only about twenty
-percent, so a ratio of two of them is good to thirty.
+scatter estimated from twelve seeds is itself good to only about twenty percent
+— that is $1/\sqrt{2(n-1)}$, and it is the scatter rather than the variance — so
+a ratio of two of them is good to thirty.
 
 The bias never exceeds 1.3 standard errors of its own mean, in any row, for
 either scheme. **That is not a measurement of a bias. It is a failure to
@@ -273,9 +284,9 @@ the second column than the first.
 ## Run it
 
 ```bash
-uv run pytest renormalisation                                # 71 tests, ~2 min
+uv run pytest renormalisation                                # 71 tests, ~1 min
 uv run python renormalisation/experiments/convergence.py     # ~60 s
-uv run python renormalisation/experiments/noise.py           # ~15 min
+uv run python renormalisation/experiments/noise.py           # ~8 min
 ```
 
 ## What this sets up

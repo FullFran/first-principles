@@ -1,16 +1,16 @@
-<!-- translated-from: 7272ce6eb3f5 -->
+<!-- translated-from: 749d577b361d -->
 
 # Renormalización
 
 Aléjate. Si el sistema se parece a sí mismo con un parámetro distinto, tienes
 un mapa, y el punto crítico es donde ese mapa se queda quieto. En percolación
 el cálculo entero es un polinomio — y para un bloque de dos es
-$2p^2 - p^4$, cuyo punto fijo es la razón áurea. 293 líneas de núcleo.
+$2p^2 - p^4$, cuyo punto fijo es la razón áurea. 419 líneas de núcleo.
 
 | | |
 |---|---|
 | **Nivel** | L1 derivar · L2 implementar · L3 experimentar |
-| **Dominio** | [`flow.py`](flow.py) — 178 líneas, sin barrido de tamaño de bloque dentro |
+| **Dominio** | [`flow.py`](flow.py) — 190 líneas, sin barrido de tamaño de bloque dentro |
 | **Métodos** | [`enumeration.py`](methods/enumeration.py) 25 · [`sampling.py`](methods/sampling.py) 38 |
 | **Tests** | 71, divididos en dominio, contrato y donde los métodos divergen |
 | **Actúa sobre** | [`forest-fire/`](../forest-fire/), que es de donde sale el umbral |
@@ -130,7 +130,7 @@ distintas aterrizan en sitios distintos — que es la entrada, no un defecto.
 | **El esquema simple se queda atascado con la regla vertical** | divergen |
 | **`either` y `both` acotan el umbral verdadero** | divergen |
 
-**Las dos últimas filas existen por un fallo que escribí yo usando esta
+**Las dos filas sobre opciones existen por un fallo que escribí yo usando esta
 entrada.** Cada método termina su firma en `**_` a propósito: `solve` le pasa
 las mismas opciones al método que se haya elegido, así que una misma llamada
 puede apuntar a cualquiera de los dos y `enumeration` ignora `draws` sin
@@ -138,12 +138,22 @@ quejarse. Esa tolerancia es lo que hace que una sola suite de contrato se pueda
 escribir contra ambos.
 
 También significaba que una palabra clave mal escrita no llegaba a ninguna
-parte. Pedir `counting="sampling"` — el parámetro se llama `method` — enumeraba
-en silencio y devolvía 0.472628 donde el muestreo da 0.476323. Sin error, sin
+parte:
+
+```
+scheme(3, "either", counting="sampling", draws=500, seed=0) -> 0.472628
+scheme(3, "either", method="sampling",   draws=500, seed=0) -> 0.476323
+scheme(3, "either")                                         -> 0.472628
+```
+
+El parámetro se llama `method`. Escrito `counting` caía en `**options`, no
+llegaba a ninguna parte, y la llamada enumeraba en silencio — la tercera línea,
+que es el valor por defecto — con la misma pinta que la segunda. Sin error, sin
 aviso, un número perfectamente plausible para una pregunta que nadie hizo. Peor
-aún: `drwas=500` usaba en silencio las 4000 tiradas por defecto, así que un
-experimento que midiera *el error de muestreo frente al tamaño de la muestra*
-no habría medido nada y lo habría dicho con toda confianza.
+aún: `drwas=500` se tragaba igual y usaba en silencio las 4000 tiradas por
+defecto, así que un experimento que midiera *el error de muestreo frente al
+tamaño de la muestra* no habría medido nada y lo habría dicho con toda
+confianza.
 
 El arreglo no es "rechazar lo que este método ignora" — eso rompería la
 tolerancia de la que depende la arquitectura. La línea va un paso más afuera:
@@ -229,8 +239,9 @@ CELL 3->4   exact fixed point 0.591046
 **La primera predicción se cumple y la segunda no se puede medir, que es lo que
 ella misma predijo sobre sí misma.** Las razones de dispersión son 1.76, 1.73,
 1.61 y 2.58 frente al 2.00 que exige $1/\sqrt{4}$ — repartidas a su alrededor,
-y una varianza estimada con doce semillas es buena solo a un veinte por ciento,
-así que un cociente de dos de ellas lo es a un treinta.
+y una dispersión estimada con doce semillas es buena solo a un veinte por
+ciento — eso es $1/\sqrt{2(n-1)}$, y es la dispersión y no la varianza — así que
+un cociente de dos de ellas lo es a un treinta.
 
 El sesgo nunca supera 1.3 errores estándar de su propia media, en ninguna fila,
 para ninguno de los dos esquemas. **Eso no es una medida de un sesgo. Es una
@@ -284,9 +295,9 @@ simple se ve mucho peor en la segunda columna que en la primera.
 ## Ejecútalo
 
 ```bash
-uv run pytest renormalisation                                # 71 tests, ~2 min
+uv run pytest renormalisation                                # 71 tests, ~1 min
 uv run python renormalisation/experiments/convergence.py     # ~60 s
-uv run python renormalisation/experiments/noise.py           # ~15 min
+uv run python renormalisation/experiments/noise.py           # ~8 min
 ```
 
 ## Qué prepara esto
