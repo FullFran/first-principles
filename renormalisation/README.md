@@ -23,6 +23,7 @@ methods/
 solve.py              the plain scheme, and the cell-to-cell one
 experiments/
   convergence.py      does a bigger block give a better answer? (half of one)
+  noise.py            what the sampler's error bars actually are
                       figures go to experiments/out/ until a derivation uses them
 tests/
   test_flow.py            domain laws, no scheme chosen
@@ -189,6 +190,53 @@ object.
 The plain scheme was comparing a block with a single site and calling them the
 same thing. They are not, and no amount of enlarging the block makes them so.
 
+**[`noise.py`](experiments/noise.py)** — the table above says sampling costs
+error bars. This measures them, and the two predictions written down first were
+deliberately different in kind.
+
+The first is ordinary Monte Carlo: the *scatter* falls as $1/\sqrt{\text{draws}}$,
+so quadrupling the draws halves it. The second is not: the fixed point is not
+an average, it is the **root** of $R(p) = p$, and the root of an unbiased
+estimator is not an unbiased estimator of the root. Expanding around the true
+point, the first-order shift averages away and what is left is second order —
+so there should also be a *bias*, going as $1/\text{draws}$ rather than
+$1/\sqrt{\text{draws}}$. Bias is largest where draws are fewest, so that is
+where the seeds were spent.
+
+```
+PLAIN B=3   exact fixed point 0.472628
+  draws  seeds       mean   scatter  halving       bias  in SEM
+    500     48   0.473681  0.006506       --  +0.001053     1.1
+   2000     12   0.473578  0.003706     1.76  +0.000950     0.9
+   8000     12   0.472463  0.002141     1.73  -0.000165    -0.3
+
+CELL 3->4   exact fixed point 0.591046
+  draws  seeds       mean   scatter  halving       bias  in SEM
+    500     48   0.587668  0.020851       --  -0.003378    -1.1
+   2000     12   0.586239  0.012956     1.61  -0.004806    -1.3
+   8000     12   0.589753  0.005025     2.58  -0.001293    -0.9
+```
+
+**The first prediction holds and the second one cannot be measured, which is
+what it predicted about itself.** The scatter ratios are 1.76, 1.73, 1.61 and
+2.58 against the 2.00 that $1/\sqrt{4}$ demands — scattered around it, and a
+variance estimated from twelve seeds is itself good to only about twenty
+percent, so a ratio of two of them is good to thirty.
+
+The bias never exceeds 1.3 standard errors of its own mean, in any row, for
+either scheme. **That is not a measurement of a bias. It is a failure to
+distinguish one from zero**, and reporting the $+0.001053$ as though it were a
+number would be reading noise. What the run does buy is a bound: at 500 draws
+the plain scheme's bias is under about 0.003 at two sigma, against a scatter of
+0.0065 at the same sample size. Smaller than the noise, exactly as the second
+prediction said — and it said that being smaller than the noise is what makes
+it hard to see.
+
+This is why the ladder is worth running rather than one long job at 8000
+draws. **A single sample size cannot tell a bias from a scatter**; only
+watching them fall at different rates can, and here one of them refused to
+show up above the floor.
+
 ## 5. What I deliberately left out
 
 - **Momentum-space renormalisation.** Wilson's actual method, the epsilon
@@ -212,7 +260,7 @@ same thing. They are not, and no amount of enlarging the block makes them so.
 | **The plain scheme with a biased rule** | Does not converge at all — 0.618, 0.619, 0.619 |
 | A block mapped to a site | Compares two different objects; cell-to-cell exists because of it |
 | Enumeration past $b = 4$ | 2^25 configurations; refuses rather than hanging |
-| Sampling | Error bars on every coefficient, and no exact answer |
+| Sampling | Error bars on every coefficient, and no exact answer — the scatter falls as $1/\sqrt{\text{draws}}$ and the bias stays under the noise floor, both [measured](experiments/noise.py) |
 | One parameter | Real flows are multi-dimensional; this cannot see an irrelevant direction |
 | The exponent | Harder than the threshold, and the number that actually tests the scheme |
 
@@ -227,6 +275,7 @@ the second column than the first.
 ```bash
 uv run pytest renormalisation                                # 71 tests, ~2 min
 uv run python renormalisation/experiments/convergence.py     # ~60 s
+uv run python renormalisation/experiments/noise.py           # ~15 min
 ```
 
 ## What this sets up
