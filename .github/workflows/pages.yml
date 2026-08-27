@@ -52,7 +52,7 @@ jobs:
       - name: Build
         run: uv run --group site python site/build.py
       - name: Check every link lands on something
-        run: uv run python site/check_links.py
+        run: uv run --group site python site/check_links.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

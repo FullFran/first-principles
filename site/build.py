@@ -95,9 +95,23 @@ def slug(heading):
     slug functions that disagree is a bug waiting for someone to hit it.
     """
     text = LINK_LABEL.sub(r"\1", heading)            # [label](url) -> label
-    text = re.sub(r"`([^`]*)`", r"\1", text)          # code spans
+
+    # Code spans come OUT before emphasis and go back in after. An underscore
+    # inside `associative_and_spurious.py` is never emphasis -- markdown never
+    # looks inside a code span -- but strip the backticks first and `_and_`
+    # starts looking exactly like italics, which is how that filename lost two
+    # underscores GitHub keeps.
+    spans = []
+
+    def stash(match):
+        spans.append(match.group(1))
+        return f"\x00{len(spans) - 1}\x00"
+
+    text = re.sub(r"`([^`]*)`", stash, text)
     for marker in ("\\*\\*", "__", "\\*", "_"):          # only PAIRED emphasis
         text = re.sub(f"{marker}(\\S(?:.*?\\S)?){marker}", r"\1", text)
+    text = re.sub("\x00(\\d+)\x00", lambda m: spans[int(m.group(1))], text)
+
     return ANCHOR_STRIP.sub("", text.strip().lower()).replace(" ", "-")
 
 

@@ -80,6 +80,18 @@ linking to `./es/architecture/` from inside `es/`, because the depth of a page
 was counted in two places and the two copies disagreed. `Page.depth` now derives
 it from where the file actually lands, so it cannot drift again.
 
+And it carries a check that exists because **neither of the other two can see a
+disagreement with GitHub.** `check_links.py` compares the built site against
+itself, `check_translations.py` validates anchors with the very function under
+test, so both are self-consistent by construction. `build.slug` claims to be
+GitHub's anchor rule; a second, independent port of github-slugger sits in
+`check_links.py` and holds it to that claim across every heading in the
+repository. It shares no code with the original on purpose — two names for one
+function agree trivially. The claim was false for six headings when it was
+first written, all of them headings containing a markdown link, and false again
+for two after the first fix, because an underscore inside a code span is never
+emphasis and the fix had stripped the backticks before finding that out.
+
 The deploy runs all three, and they fail differently on purpose: a stale page
 publishes with its notice, a broken translation or a dead link blocks. Refusing
 to publish staleness would hide it rather than report it; publishing a false
