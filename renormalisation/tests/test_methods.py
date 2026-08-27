@@ -98,3 +98,36 @@ def test_a_block_of_one_is_rejected(method):
 def test_cell_to_cell_needs_the_second_block_to_be_larger(method):
     with pytest.raises(ValueError, match="must be larger"):
         solve.cell_to_cell(3, 3, "either", method, **OPTIONS[method])
+
+
+def test_a_misspelled_option_is_rejected_rather_than_ignored(method):
+    """The failure this catches is silent, which is the only reason it needs a
+    test. Every method ends its signature in `**_`, so before this check
+    `counting="sampling"` reached nothing, changed nothing, and came back with
+    the enumerated default -- a plausible number for a question nobody asked.
+    """
+    with pytest.raises(ValueError, match="unknown option"):
+        solve.scheme(3, "either", method, counting="sampling", **OPTIONS[method])
+
+
+def test_cell_to_cell_rejects_it_too(method):
+    with pytest.raises(ValueError, match="unknown option"):
+        solve.cell_to_cell(3, 4, "either", method, drwas=500, **OPTIONS[method])
+
+
+def test_an_option_another_method_understands_is_still_accepted(method):
+    """The tolerance above it is deliberate and has to survive the rejection.
+
+    `solve` hands the same options to whichever method is selected, so one call
+    can be pointed at either one and enumeration ignores `draws`. Forbid that
+    and this parametrized suite stops being writable at all.
+    """
+    solve.scheme(3, "either", method, draws=500, seed=0)
+
+
+def test_and_the_accepted_options_actually_arrive(method):
+    """Accepting a keyword and then dropping it would pass the test above."""
+    first = solve.scheme(3, "either", method, draws=500, seed=0).polynomial
+    second = solve.scheme(3, "either", method, draws=500, seed=1).polynomial
+    moved = not np.array_equal(first, second)
+    assert moved == (method == "sampling")

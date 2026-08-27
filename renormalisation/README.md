@@ -10,7 +10,7 @@ $2p^2 - p^4$, whose fixed point is the golden ratio. 293 lines of core.
 | **Level** | L1 derive · L2 implement · L3 experiment |
 | **Domain** | [`flow.py`](flow.py) — 178 lines, no block-size sweep in it |
 | **Methods** | [`enumeration.py`](methods/enumeration.py) 25 · [`sampling.py`](methods/sampling.py) 38 |
-| **Tests** | 63, split into domain, contract, and where the methods diverge |
+| **Tests** | 71, split into domain, contract, and where the methods diverge |
 | **Acts on** | [`forest-fire/`](../forest-fire/), which is where the threshold comes from |
 
 ## Layout
@@ -98,7 +98,7 @@ solve.cell_to_cell()      block to block, which is the one that works
 
 ## 4. What I verified
 
-63 tests, in three groups. Note what is *not* in the contract: getting the
+71 tests, in three groups. Note what is *not* in the contract: getting the
 right answer. A renormalisation scheme is a **choice**, and different choices
 land in different places — which is the entry rather than a defect.
 
@@ -116,11 +116,32 @@ land in different places — which is the entry rather than a defect.
 | A block cannot span with fewer sites than a side | contract |
 | There is an unstable fixed point, and an exponent | contract |
 | **Cell-to-cell beats the plain scheme** | contract |
+| **A misspelled option is rejected rather than ignored** | contract |
+| An option only the *other* method understands is still accepted | contract |
 | **The two counting methods agree wherever both can run** | differ |
 | **Enumeration refuses a block it cannot finish** | differ |
 | **Sampling keeps going where enumeration stops** | differ |
 | **The plain scheme is stuck with the vertical rule** | differ |
 | **`either` and `both` bracket the true threshold** | differ |
+
+**The last two rows exist because of a bug I wrote while using this entry.**
+Every method ends its signature in `**_` on purpose: `solve` hands the same
+options to whichever method is selected, so one call can be pointed at either
+and `enumeration` quietly ignores `draws`. That tolerance is what makes a
+single contract suite writable against both.
+
+It also meant a misspelled keyword reached nothing. Asking for
+`counting="sampling"` — the parameter is `method` — silently enumerated and
+returned 0.472628 where the sampler gives 0.476323. No error, no warning, a
+perfectly plausible number for a question nobody asked. Worse, `drwas=500`
+silently used the default 4000 draws, so an experiment measuring *sampling
+error against sample size* would have measured nothing and said so confidently.
+
+The fix is not "reject what this method ignores" — that would break the
+tolerance the architecture depends on. The line goes one step out: `solve`
+collects the keywords **any** registered method accepts and rejects anything
+outside that union. An option some method understands may be ignored by
+another; an option no method understands is a mistake.
 
 ### The experiment
 
@@ -204,7 +225,7 @@ the second column than the first.
 ## Run it
 
 ```bash
-uv run pytest renormalisation                                # 63 tests, ~40 s
+uv run pytest renormalisation                                # 71 tests, ~2 min
 uv run python renormalisation/experiments/convergence.py     # ~60 s
 ```
 

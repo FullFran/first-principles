@@ -13,6 +13,7 @@ block grows -- measured, the fixed point of the plain scheme is stuck around
 of it, because both sides of the comparison are the same kind of object.
 """
 
+import inspect
 from dataclasses import dataclass
 
 import numpy as np
@@ -24,6 +25,33 @@ __all__ = ["scheme", "cell_to_cell", "Scheme", "Comparison",
            "METHODS", "DEFAULT_METHOD"]
 
 DEFAULT_METHOD = "enumeration"
+
+
+def _accepted_options():
+    """Every keyword some method understands.
+
+    Each method ends its signature with `**_` on purpose. `solve` hands the
+    same options to whichever method is selected, so a caller can swap the
+    method without rewriting the call and enumeration quietly ignores `draws`.
+    That tolerance is what lets one contract suite run against both.
+
+    But it also means a *misspelled* keyword reaches nothing, changes nothing,
+    and the run comes back with the default and no complaint -- asking for
+    `counting="sampling"` silently enumerates, and the answer looks fine.
+
+    So the line goes here, and it is not "reject what this method ignores":
+    an option some method understands may be ignored by another, and an option
+    no method understands is a mistake.
+    """
+    return frozenset(
+        name
+        for module in METHODS.values()
+        for name, parameter in inspect.signature(module.polynomial).parameters.items()
+        if parameter.kind is not inspect.Parameter.VAR_KEYWORD
+    ) - {"size", "rule"}
+
+
+OPTIONS = _accepted_options()
 
 
 @dataclass(frozen=True)
@@ -64,6 +92,10 @@ class Comparison:
 def _polynomial(size, rule, method, **options):
     if method not in METHODS:
         raise ValueError(f"unknown method {method!r}; available: {sorted(METHODS)}")
+    unknown = sorted(set(options) - OPTIONS)
+    if unknown:
+        raise ValueError(
+            f"unknown option(s) {unknown}; available: {sorted(OPTIONS)}")
     flow.check_block(size)
     flow.check_rule(rule)
     return METHODS[method].polynomial(size, rule, **options)
