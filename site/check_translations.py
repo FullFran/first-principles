@@ -19,6 +19,7 @@ Where this stops being right, because every check in this repository says so:
   different row of a table passes.
 """
 
+import hashlib
 import re
 import sys
 from pathlib import Path
@@ -34,12 +35,20 @@ LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 IMAGE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
 DISPLAY = re.compile(r"\$\$(.+?)\$\$", re.S)
 INLINE = re.compile(r"(?<!\$)\$([^$\n]+?)\$(?!\$)")
-# Integers as well as decimals. Restricted to decimals this missed every test
-# count, year and lattice size -- "71 tests" translated as "17 tests" passed.
-# Widening it was checked before it was kept: across all fifteen documents it
-# takes the numbers under watch from 395 to 957 and produces zero false
-# positives, so there is no noise to trade against the coverage.
-NUMBER = re.compile(r"(?<![\w.])-?\d+(?:\.\d+)?(?![\w.])")
+# Integers as well as decimals: restricted to decimals this missed every test
+# count, year and lattice size, so "71 tests" could become "17 tests".
+#
+# The trailing lookahead is `(?!\.?\d)(?!\w)` and not the obvious `(?![\w.])`,
+# which had a hole big enough to drive the whole file through: a number that
+# ENDS A SENTENCE is followed by a period, so `(?![\w.])` rejected it and the
+# check never saw it. Twenty-seven numbers across these documents sit at the
+# end of a sentence, `alpha_c ~ 0.138.` among them -- the headline result of an
+# entry, silently unwatched. The two lookaheads say what was meant instead:
+# not part of a longer number, and not part of a word. `v0.16.9` and `1.2.3`
+# are still skipped, because an identifier is not a measurement.
+NUMBER = re.compile(r"(?<![\w.])-?\d+(?:\.\d+)?(?!\.?\d)(?!\w)")
+CODE_LINK = re.compile(r"\[`([^`]+)`\]\(")
+MARKER = re.compile(r"[\u2713\u2717\u2714\u2718\u00d7]")
 STAMP = re.compile(r"<!--\s*translated-from:\s*([0-9a-f]{12})\s*-->")
 
 
@@ -64,7 +73,8 @@ def outside_code(text):
 
 def check(src, dst):
     """Return a list of complaints. Empty means the structure survived."""
-    s, d = src.read_text(), dst.read_text()
+    s, d = (src.read_text(encoding="utf-8"),
+            dst.read_text(encoding="utf-8"))
     d = STAMP.sub("", d, count=1)
     bad = []
 
@@ -139,8 +149,49 @@ def check(src, dst):
     lost = sorted(ns - nd)
     if lost:
         bad.append(f"numbers lost: {lost[:6]}")
+    # Both directions. Losing a measurement and inventing one are the same
+    # defect wearing different clothes, and only one of them was checked.
+    invented = sorted(nd - ns)
+    if invented:
+        bad.append(f"numbers the English never had: {invented[:6]}")
+
+    # A link's label is prose and gets translated, but a label that is inline
+    # code names a file or an entry and must not. Both checkers verify link
+    # TARGETS, so without this they would jointly certify a link pointing at
+    # `tmm/` while calling it `hopfield/`.
+    ls_code, ld_code = sorted(CODE_LINK.findall(s)), sorted(CODE_LINK.findall(d))
+    if ls_code != ld_code:
+        gone = sorted(set(ls_code) - set(ld_code))
+        bad.append(f"code link labels changed: {gone[:4] or ld_code[:4]}")
+
+    # The competence grid in the README is ticks in table cells: not a link,
+    # not a number, and the single most load-bearing claim in the repository.
+    if len(MARKER.findall(s)) != len(MARKER.findall(d)):
+        bad.append(f"table markers: en={len(MARKER.findall(s))} "
+                   f"es={len(MARKER.findall(d))}")
 
     return bad
+
+
+def is_stale(src, dst):
+    """Was this translation made from a different English than the one on disk?
+
+    A stale page is NOT checked structurally, and that is the whole point.
+    `build.py` publishes it with a notice saying it was made from an older
+    version, so it is *expected* to be missing whatever the English gained
+    since. Enforcing structure on it would fail the build for exactly the case
+    the policy says should publish -- which is what this did before anyone
+    checked, because a stale page fails on heading counts almost immediately.
+
+    Stale is declared. Structurally wrong while claiming to be current is a
+    lie. Only the second one blocks.
+    """
+    stamp = STAMP.search(dst.read_text(encoding="utf-8"))
+    if not stamp:
+        return False
+    current = hashlib.sha256(
+        src.read_text(encoding="utf-8").encode("utf-8")).hexdigest()[:12]
+    return stamp.group(1) != current
 
 
 def main():
@@ -150,13 +201,17 @@ def main():
         return 0
 
     width = max(len(str(p.relative_to(ES))) for p in pages)
-    failed = 0
+    failed = stale = 0
     for page in pages:
         rel = page.relative_to(ES)
         src = ROOT / rel
         if not src.exists():
             print(f"{str(rel):<{width}}  ORPHAN -- no English source")
             failed += 1
+            continue
+        if is_stale(src, page):
+            stale += 1
+            print(f"{str(rel):<{width}}  stale -- not checked, publishes with a notice")
             continue
         bad = check(src, page)
         if bad:
@@ -167,7 +222,9 @@ def main():
         else:
             print(f"{str(rel):<{width}}  ok")
 
-    print(f"\n{len(pages) - failed}/{len(pages)} structurally sound")
+    checked = len(pages) - stale
+    print(f"\n{checked - failed}/{checked} structurally sound"
+          + (f", {stale} stale and skipped" if stale else ""))
     return 1 if failed else 0
 
 

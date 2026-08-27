@@ -67,21 +67,37 @@ def digest(text):
 
 
 ANCHOR_STRIP = re.compile(r"[^\w\- ]", re.U)
+LINK_LABEL = re.compile(r"\[([^\]]*)\]\([^)]*\)")
 
 
 def slug(heading):
     """GitHub's anchor rule, because the anchors were written for GitHub.
 
-    Lowercase, drop anything that is not a word character, hyphen or space,
-    then spaces to hyphens. Backslashes, dollars and operators inside a heading
-    like `8.1 The quarter-wave, $\delta = \pi/2$` all vanish and the double
-    space they leave behind becomes a double hyphen -- which is exactly the
-    anchor GitHub generates, and therefore exactly the one the markdown links
-    to. `check_translations.py` imports this rather than keeping its own copy:
-    two slug functions that disagree is a bug waiting for someone to hit it.
+    GitHub slugs the RENDERED heading, not the markdown source, so this has to
+    render the inline markup first and only then reduce. Getting that order
+    wrong is not theoretical: stripping the source character by character turns
+    `See [\u0060flow.py\u0060](flow.py) for the map` into `see-flowpyflowpy-...`,
+    because the link's URL is still sitting there, and it deletes the
+    underscore in `W_ij`, which GitHub keeps.
+
+    So: links reduce to their label, code spans and PAIRED emphasis markers
+    drop while their contents stay, and a lone underscore is just a character.
+    Then lowercase, drop anything that is not a word character, hyphen or
+    space, and spaces become hyphens.
+
+    Maths survives that reduction as its own source, which is what GitHub does
+    too: `8.1 The quarter-wave, $\delta = \pi/2$` loses the dollars, backslash,
+    equals and slash, and the double space they leave behind becomes the double
+    hyphen in `#81-the-quarter-wave-delta--pi2`.
+
+    `check_translations.py` imports this rather than keeping its own copy: two
+    slug functions that disagree is a bug waiting for someone to hit it.
     """
-    text = re.sub(r"[*_`]", "", heading).strip().lower()
-    return ANCHOR_STRIP.sub("", text).replace(" ", "-")
+    text = LINK_LABEL.sub(r"\1", heading)            # [label](url) -> label
+    text = re.sub(r"`([^`]*)`", r"\1", text)          # code spans
+    for marker in ("\\*\\*", "__", "\\*", "_"):          # only PAIRED emphasis
+        text = re.sub(f"{marker}(\\S(?:.*?\\S)?){marker}", r"\1", text)
+    return ANCHOR_STRIP.sub("", text.strip().lower()).replace(" ", "-")
 
 
 def renderer():
@@ -122,7 +138,17 @@ class Page:
     title: str
     entry: str = ""          # '' for repo-level pages
     kind: str = "doc"        # 'home' | 'entry' | 'doc' | 'architecture'
+    title_es: str = ""       # the translated heading, when there is one
     assets: list = field(default_factory=list)
+
+    def title_for(self, language):
+        """A Spanish page needs a Spanish title.
+
+        The tab, the browser history and the site map's own table all read
+        this, and taking it from the English source meant every translated
+        page announced itself in English while its body was in Spanish.
+        """
+        return self.title_es if language == "es" and self.title_es else self.title
 
     def url(self, language):
         prefix = "" if language == "en" else "es/"
@@ -153,26 +179,39 @@ def first_heading(text, fallback):
 
 def discover():
     """Every markdown file worth publishing, found rather than listed."""
-    pages = [Page(key="", source=ROOT / "README.md",
-                  title="first-principles", kind="home")]
+    home = ROOT / "README.md"
+    pages = [Page(key="", source=home, title="first-principles", kind="home",
+                  title_es=translated_title(home, "first-principles"))]
     architecture = ROOT / "docs" / "architecture.md"
     if architecture.exists():
-        pages.append(Page(key="architecture", source=architecture,
-                          title=first_heading(architecture.read_text(), "Architecture"),
-                          kind="architecture"))
+        title = first_heading(architecture.read_text(encoding="utf-8"), "Architecture")
+        pages.append(Page(key="architecture", source=architecture, title=title,
+                          kind="architecture",
+                          title_es=translated_title(architecture, title)))
 
     for conftest in sorted(ROOT.glob("*/conftest.py")):
         entry = conftest.parent.name
         readme = conftest.parent / "README.md"
         if readme.exists():
-            pages.append(Page(key=entry, source=readme,
-                              title=first_heading(readme.read_text(), entry),
-                              entry=entry, kind="entry"))
+            title = first_heading(readme.read_text(encoding="utf-8"), entry)
+            pages.append(Page(key=entry, source=readme, title=title,
+                              entry=entry, kind="entry",
+                              title_es=translated_title(readme, title)))
         for doc in sorted((conftest.parent / "docs").glob("*.md")):
+            title = first_heading(doc.read_text(encoding="utf-8"), doc.stem)
             pages.append(Page(key=f"{entry}/docs/{doc.stem}", source=doc,
-                              title=first_heading(doc.read_text(), doc.stem),
-                              entry=entry, kind="doc"))
+                              title=title, entry=entry, kind="doc",
+                              title_es=translated_title(doc, title)))
     return pages
+
+
+def translated_title(source, fallback):
+    """The first heading of the translation, if there is a translation."""
+    spanish = SPANISH / source.relative_to(ROOT)
+    if not spanish.exists():
+        return ""
+    heading = first_heading(spanish.read_text(encoding="utf-8"), "")
+    return heading if heading and heading != fallback else ""
 
 
 def spanish_for(page):
@@ -186,12 +225,29 @@ def translation_state(page):
     candidate = spanish_for(page)
     if not candidate.exists():
         return None, "missing"
-    text = candidate.read_text()
+    text = candidate.read_text(encoding="utf-8")
     stamp = STAMP.search(text)
     body = STAMP.sub("", text, count=1).lstrip("\n")
-    if not stamp or stamp.group(1) != digest(page.source.read_text()):
+    if not stamp or stamp.group(1) != digest(page.source.read_text(encoding="utf-8")):
         return body, "stale"
     return body, "ok"
+
+
+def asset_name(page, asset):
+    """What a copied figure is called in the output directory.
+
+    Not its basename. Every figure a page uses lands in that page's one output
+    directory, so two `figures/loss.png` and `extra/loss.png` referenced from
+    the same page would overwrite each other -- and which one survived was
+    decided by the iteration order of a set, so it was not even consistent
+    between builds. Flattening the path relative to the page keeps them apart
+    and stays deterministic.
+    """
+    try:
+        relative = asset.relative_to(page.source.parent)
+    except ValueError:
+        relative = asset.relative_to(ROOT)
+    return "-".join(relative.parts)
 
 
 def rewrite_links(markup, page, language, pages):
@@ -224,7 +280,7 @@ def rewrite_links(markup, page, language, pages):
         if resolved.suffix.lower() in (".png", ".jpg", ".svg", ".gif"):
             if resolved.exists():
                 page.assets.append(resolved)
-                return f'{attribute}="{resolved.name}{anchor}"'
+                return f'{attribute}="{asset_name(page, resolved)}{anchor}"'
         try:
             relative = resolved.relative_to(ROOT)
         except ValueError:
@@ -257,7 +313,7 @@ def shell(page, language, body, pages, notice=""):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{html.escape(page.title)} · first-principles</title>
+<title>{html.escape(page.title_for(language))} · first-principles</title>
 <link rel="stylesheet" href="{up}style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -297,19 +353,27 @@ def site_map(pages, language, up):
     entries = {}
     for candidate in pages:
         if candidate.entry:
-            entries.setdefault(candidate.entry, {})[candidate.kind] = candidate
+            entries.setdefault(candidate.entry, []).append(candidate)
 
     rows = []
     for name in sorted(entries):
+        # Keyed by kind, a second derivation in one entry's docs/ was built and
+        # then silently dropped from the map -- while this docstring claimed it
+        # could not miss one. A list cannot overwrite.
         parts = entries[name]
+        readme = next((p for p in parts if p.kind == "entry"), None)
+        docs = [p for p in parts if p.kind == "doc"]
+
         links = []
-        if "entry" in parts:
-            links.append(f'<a href="{up}{parts["entry"].url(language)}">{words["readme"]}</a>')
-        if "doc" in parts:
-            links.append(f'<a href="{up}{parts["doc"].url(language)}">{words["derivation"]}</a>')
-        title = parts.get("doc", parts.get("entry")).title
+        if readme:
+            links.append(f'<a href="{up}{readme.url(language)}">{words["readme"]}</a>')
+        for doc in docs:
+            label = words["derivation"] if len(docs) == 1 else doc.title_for(language)
+            links.append(f'<a href="{up}{doc.url(language)}">{html.escape(label)}</a>')
+
+        headline = (docs[0] if docs else readme).title_for(language)
         rows.append(f"<tr><td><strong>{html.escape(name)}</strong></td>"
-                    f"<td>{html.escape(title)}</td>"
+                    f"<td>{html.escape(headline)}</td>"
                     f"<td>{' · '.join(links)}</td></tr>")
 
     architecture = next((p for p in pages if p.kind == "architecture"), None)
@@ -377,14 +441,14 @@ def main():
     if OUTPUT.exists():
         shutil.rmtree(OUTPUT)
     OUTPUT.mkdir(parents=True)
-    (OUTPUT / "style.css").write_text(STYLE)
+    (OUTPUT / "style.css").write_text(STYLE, encoding="utf-8")
 
     md = renderer()
     pages = discover()
     stale, missing, broken = [], [], []
 
     for page in pages:
-        english = page.source.read_text()
+        english = page.source.read_text(encoding="utf-8")
         translated, state = translation_state(page)
 
         for language in ("en", "es"):
@@ -401,15 +465,22 @@ def main():
 
             markup = md.render(text, {})
             markup, unresolved = rewrite_links(markup, page, language, pages)
-            broken.extend((page.key or "home", target) for target in unresolved)
+            # Once per page, not once per language: the same link is
+            # unresolved in both, and counting it twice reported one problem
+            # as two.
+            if language == "en":
+                broken.extend((page.key or "home", target) for target in unresolved)
 
             destination = page.output(language)
             destination.parent.mkdir(parents=True, exist_ok=True)
-            destination.write_text(shell(page, language, markup, pages, notice))
+            destination.write_text(
+                shell(page, language, markup, pages, notice),
+                encoding="utf-8")
 
-        for asset in set(page.assets):
+        for asset in sorted(set(page.assets)):
             for language in ("en", "es"):
-                shutil.copy2(asset, page.output(language).parent / asset.name)
+                shutil.copy2(asset,
+                             page.output(language).parent / asset_name(page, asset))
 
         if state == "stale":
             stale.append(page.key or "home")

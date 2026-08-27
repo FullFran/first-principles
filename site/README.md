@@ -1,6 +1,6 @@
 # The site
 
-[www.fullfran.com/first-principles](http://www.fullfran.com/first-principles/) —
+[www.fullfran.com/first-principles](https://www.fullfran.com/first-principles/) —
 every document in this repository, in English and Spanish.
 
 ## Why it is generated
@@ -84,6 +84,13 @@ The deploy runs all three, and they fail differently on purpose: a stale page
 publishes with its notice, a broken translation or a dead link blocks. Refusing
 to publish staleness would hide it rather than report it; publishing a false
 number or a link to nothing would be the lying map.
+
+Those two are less separable than they sound. A stale page fails the structural
+check immediately — the English gained a heading it has not — so running the
+check over it blocked the deploy for exactly the case the policy says should
+publish. **A page whose stamp is stale is therefore skipped rather than
+checked.** It is already declared, and there is nothing coherent to enforce
+against an English it has not caught up with.
 
 ## What it does to the markdown
 

@@ -10,7 +10,6 @@ dev = ["pytest>=8"]
 site = [
     "markdown-it-py>=4.2.0",
     "mdit-py-plugins>=0.6.1",
-    "pygments>=2.21.0",
 ]
 
 # Not a package. This repo is read, not installed.

@@ -1,4 +1,4 @@
-<!-- translated-from: 6ff115f7664e -->
+<!-- translated-from: db5d031c7567 -->
 
 # first-principles
 
@@ -87,7 +87,7 @@ series como se gane. La regla 1 aplica también aquí: una serie puede ser corta
 no puede mentir, así que todo lo que no está construido lo dice.
 
 Todo esto es además una web, en inglés y en español:
-**[www.fullfran.com/first-principles](http://www.fullfran.com/first-principles/)**.
+**[www.fullfran.com/first-principles](https://www.fullfran.com/first-principles/)**.
 Se genera a partir de estos archivos en lugar de escribirse junto a ellos — mira
 [`site/`](site/) para saber por qué, y para saber qué pasa cuando una traducción
 se queda atrás respecto del inglés del que se hizo.

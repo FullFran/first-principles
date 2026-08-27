@@ -83,7 +83,7 @@ earns. Rule 1 applies here too: a series is allowed to be short, and it is not
 allowed to lie, so anything not built says so.
 
 Everything here is also a website, in English and Spanish:
-**[www.fullfran.com/first-principles](http://www.fullfran.com/first-principles/)**.
+**[www.fullfran.com/first-principles](https://www.fullfran.com/first-principles/)**.
 It is generated from these files rather than written alongside them — see
 [`site/`](site/) for why, and for what happens when a translation falls behind
 the English it was made from.

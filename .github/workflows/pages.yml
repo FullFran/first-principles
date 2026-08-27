@@ -15,6 +15,14 @@
 # variable inside a code fence, an anchor that resolves to nothing: those do not
 # announce themselves, they just quietly say something false. That is rule 1 of
 # this repository, and it blocks the deploy.
+#
+# The two are not as separable as they look, and the first version of this file
+# got it wrong: a stale page fails the structural check almost immediately, on
+# heading counts, because the English has moved on. Running that check before
+# the build therefore blocked the deploy for exactly the case the paragraph
+# above promises will publish. check_translations.py now skips a page whose
+# stamp is stale -- it is already declared, and there is nothing to enforce
+# against an English it has not caught up with.
 name: pages
 
 on:
