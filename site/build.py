@@ -31,6 +31,7 @@ from mdit_py_plugins.dollarmath import dollarmath_plugin
 ROOT = Path(__file__).resolve().parent.parent
 SPANISH = Path(__file__).resolve().parent / "es"
 OUTPUT = ROOT / "_site"
+SITE = "first-principles"
 
 STAMP = re.compile(r"<!--\s*translated-from:\s*([0-9a-f]{12})\s*-->")
 
@@ -293,6 +294,17 @@ def rewrite_links(markup, page, language, pages):
     return markup, unresolved
 
 
+def tab_title(page, language):
+    """The browser tab, without saying the repository's name twice.
+
+    Every page is suffixed with the repository so a tab is identifiable on its
+    own -- except the front page, whose title already IS the repository, and
+    which read `first-principles \u00b7 first-principles`.
+    """
+    title = page.title_for(language)
+    return title if title == SITE else f"{title} \u00b7 {SITE}"
+
+
 def shell(page, language, body, pages, notice=""):
     words = STRINGS[language]
     depth = page.depth(language)
@@ -313,7 +325,7 @@ def shell(page, language, body, pages, notice=""):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{html.escape(page.title_for(language))} · first-principles</title>
+<title>{html.escape(tab_title(page, language))}</title>
 <link rel="stylesheet" href="{up}style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
