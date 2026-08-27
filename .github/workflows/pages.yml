@@ -1,0 +1,60 @@
+# Build the site from the repository and publish it.
+#
+# The site is generated on every push, which is what keeps it honest: there is
+# no built copy in the repository to go stale, and no step where somebody has
+# to remember to regenerate it.
+#
+# Two kinds of wrong, handled differently on purpose.
+#
+# A STALE translation -- one whose English source has moved on -- still deploys,
+# carrying a notice that says so. Refusing to publish would hide the staleness
+# rather than report it, and a site that reports what it does not know is worth
+# more than one that waits to be perfect. So the build never runs with --strict.
+#
+# A BROKEN translation is not the same thing. A rounded number, a translated
+# variable inside a code fence, an anchor that resolves to nothing: those do not
+# announce themselves, they just quietly say something false. That is rule 1 of
+# this repository, and it blocks the deploy.
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Check the translations do not lie
+        run: uv run --group site python site/check_translations.py
+      - name: Build
+        run: uv run --group site python site/build.py
+      - name: Check every link lands on something
+        run: uv run python site/check_links.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

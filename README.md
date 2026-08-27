@@ -82,6 +82,12 @@ So the directories stay flat and one entry can be in as many series as it
 earns. Rule 1 applies here too: a series is allowed to be short, and it is not
 allowed to lie, so anything not built says so.
 
+Everything here is also a website, in English and Spanish:
+**[www.fullfran.com/first-principles](http://www.fullfran.com/first-principles/)**.
+It is generated from these files rather than written alongside them — see
+[`site/`](site/) for why, and for what happens when a translation falls behind
+the English it was made from.
+
 Repo-wide write-ups live in [`docs/`](docs/) — right now the [physics/numerics
 split](docs/architecture.md). Anything specific to one entry lives inside it,
 in its own `docs/`: the derivations behind [`tmm/`](tmm/docs/physics.md),
