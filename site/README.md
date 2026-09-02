@@ -64,7 +64,7 @@ breaks. The rule is therefore that an anchor must resolve against its own
 document's headings, which checks the English side for free.
 
 ```bash
-uv run python site/check_links.py
+uv run --group site python site/check_links.py
 ```
 
 [`check_links.py`](check_links.py) reads the HTML that came out, not the
