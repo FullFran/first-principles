@@ -1,10 +1,10 @@
-<!-- translated-from: 11e0377df7b0 -->
+<!-- translated-from: fd109b5c961b -->
 
 # Incendio forestal
 
 Los árboles crecen, cae un rayo, el fuego se propaga a los árboles que se
 tocan. Tres reglas y ningún ajuste, y el bosque se asienta por sí solo en la
-densidad donde el fuego apenas logra atravesarlo. 220 líneas de núcleo.
+densidad donde el fuego apenas logra atravesarlo. 320 líneas de núcleo.
 
 | | |
 |---|---|

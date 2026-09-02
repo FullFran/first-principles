@@ -3,7 +3,7 @@
 You can evaluate an energy anywhere and you can never normalise it. Two chains
 live with that in different ways: one compares heights and rejects, the other
 follows the gradient and never rejects. One is exact and one is biased by a
-known amount. 342 lines of core.
+known amount. 356 lines of core.
 
 | | |
 |---|---|

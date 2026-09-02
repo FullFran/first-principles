@@ -1,17 +1,17 @@
-<!-- translated-from: 749d577b361d -->
+<!-- translated-from: 231fa815b4e1 -->
 
 # Renormalización
 
 Aléjate. Si el sistema se parece a sí mismo con un parámetro distinto, tienes
 un mapa, y el punto crítico es donde ese mapa se queda quieto. En percolación
 el cálculo entero es un polinomio — y para un bloque de dos es
-$2p^2 - p^4$, cuyo punto fijo es la razón áurea. 419 líneas de núcleo.
+$2p^2 - p^4$, cuyo punto fijo es la razón áurea. 428 líneas de núcleo.
 
 | | |
 |---|---|
 | **Nivel** | L1 derivar · L2 implementar · L3 experimentar |
 | **Dominio** | [`flow.py`](flow.py) — 190 líneas, sin barrido de tamaño de bloque dentro |
-| **Métodos** | [`enumeration.py`](methods/enumeration.py) 25 · [`sampling.py`](methods/sampling.py) 38 |
+| **Métodos** | [`enumeration.py`](methods/enumeration.py) 24 · [`sampling.py`](methods/sampling.py) 42 |
 | **Tests** | 71, divididos en dominio, contrato y donde los métodos divergen |
 | **Actúa sobre** | [`forest-fire/`](../forest-fire/), que es de donde sale el umbral |
 

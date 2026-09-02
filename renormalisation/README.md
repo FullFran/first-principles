@@ -3,13 +3,13 @@
 Zoom out. If the system looks like itself with a different parameter, you have
 a map, and the critical point is where that map stands still. On percolation
 the whole calculation is one polynomial — and for a block of two it is
-$2p^2 - p^4$, whose fixed point is the golden ratio. 419 lines of core.
+$2p^2 - p^4$, whose fixed point is the golden ratio. 428 lines of core.
 
 | | |
 |---|---|
 | **Level** | L1 derive · L2 implement · L3 experiment |
 | **Domain** | [`flow.py`](flow.py) — 190 lines, no block-size sweep in it |
-| **Methods** | [`enumeration.py`](methods/enumeration.py) 25 · [`sampling.py`](methods/sampling.py) 38 |
+| **Methods** | [`enumeration.py`](methods/enumeration.py) 24 · [`sampling.py`](methods/sampling.py) 42 |
 | **Tests** | 71, split into domain, contract, and where the methods diverge |
 | **Acts on** | [`forest-fire/`](../forest-fire/), which is where the threshold comes from |
 

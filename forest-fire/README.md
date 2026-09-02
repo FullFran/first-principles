@@ -2,7 +2,7 @@
 
 Trees grow, lightning strikes, fire spreads to touching trees. Three rules and
 no tuning, and the forest settles by itself at the density where fire can just
-barely cross it. 220 lines of core.
+barely cross it. 320 lines of core.
 
 | | |
 |---|---|

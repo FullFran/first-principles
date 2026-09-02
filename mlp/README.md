@@ -3,7 +3,7 @@
 Backpropagation is one application of the chain rule, written out. This entry
 derives it, checks it against a derivative computed a completely different way,
 and then contrasts three step rules that are handed exactly the same gradient.
-383 lines of core across three optimisers.
+394 lines of core across three optimisers.
 
 | | |
 |---|---|

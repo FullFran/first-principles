@@ -1,11 +1,11 @@
-<!-- translated-from: b09e548e8b62 -->
+<!-- translated-from: 93cd09d79cf7 -->
 
 # Muestreo de un paisaje de energía
 
 Puedes evaluar una energía en cualquier punto y nunca puedes normalizarla. Dos
 cadenas conviven con eso de formas distintas: una compara alturas y rechaza, la
 otra sigue el gradiente y nunca rechaza. Una es exacta y la otra está sesgada en
-una cantidad conocida. 342 líneas de núcleo.
+una cantidad conocida. 356 líneas de núcleo.
 
 | | |
 |---|---|

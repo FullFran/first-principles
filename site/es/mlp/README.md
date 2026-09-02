@@ -1,11 +1,11 @@
-<!-- translated-from: 3a85cc45147a -->
+<!-- translated-from: 9151b8f20c4c -->
 
 # Perceptrón multicapa
 
 La retropropagación es una aplicación de la regla de la cadena, escrita al
 completo. Esta entrada la deriva, la contrasta con una derivada calculada de una
 forma completamente distinta, y luego enfrenta tres reglas de actualización a las
-que se les entrega exactamente el mismo gradiente. 383 líneas de núcleo
+que se les entrega exactamente el mismo gradiente. 394 líneas de núcleo
 repartidas en tres optimizadores.
 
 | | |
