@@ -1,4 +1,4 @@
-<!-- translated-from: db5d031c7567 -->
+<!-- translated-from: d266f5a92acd -->
 
 # first-principles
 
@@ -6,7 +6,8 @@ Implementaciones mínimas, reconstruidas desde las ecuaciones.
 
 Cada entrada existe aquí para demostrar que entiendo un mecanismo — no para
 competir con una biblioteca de producción. Si necesitas un solver de matriz de
-transferencia, instala `tmm`. Si quieres ver si sé derivar uno, lee `tmm/core.py`.
+transferencia, instala `tmm`. Si quieres ver si sé derivar uno, lee
+[`tmm/physics.py`](tmm/physics.py).
 
 Aquí es también donde mis repos didácticos dispersos vienen a ser reescritos.
 Los notebooks de curso de 2023–2024 que nunca llegaron a ser legibles reciben
@@ -56,7 +57,8 @@ Una fila recibe una marca solo cuando es cierta hoy, no cuando lo fue alguna vez
 
 ## Series
 
-El mapa es alfabético y no dice nada sobre qué lleva a qué. Estas sí.
+El mapa está en el orden en que se construyeron las entradas y no dice nada
+sobre qué lleva a qué. Estas sí.
 
 **Monte Carlo** — estimar tirando dardos, y el $1/\sqrt{N}$ que cuesta
 > [`photon-transport`](photon-transport/) → [`sampling`](sampling/)
@@ -73,7 +75,7 @@ El mapa es alfabético y no dice nada sobre qué lleva a qué. Estas sí.
 **Ondas en la materia**
 > [`tmm`](tmm/)
 
-Fíjate en que `sampling` aparece dos veces y `diffusion` dos veces. **Esa es la
+Fíjate en que `sampling` aparece dos veces y `diffusion` tres veces. **Esa es la
 razón de que esto sea una vista y no un árbol de directorios.** Casi toda entrada
 pertenece a dos o tres de estas — `hopfield` es una red neuronal, un vidrio de
 espín y un optimizador; `photon-transport` es Monte Carlo y física de la
@@ -101,8 +103,9 @@ entrada vive dentro de ella, en su propio `docs/`: las derivaciones detrás de
 [`sampling/`](sampling/docs/distribution.md) y
 [`forest-fire/`](forest-fire/docs/lattice.md).
 
-Cada uno de ellos lleva una sección de historia, porque las personas que se
-atascaron con estos problemas son parte de la explicación. Las afirmaciones
+Todos ellos salvo [`tmm/`](tmm/docs/physics.md) llevan una sección de
+historia, porque las personas que se atascaron con estos problemas son parte
+de la explicación. Las afirmaciones
 históricas se marcan **A** (documentada, idealmente primaria), **B** (una
 reconstrucción) o **C** (contada en todas partes y sin fuente), siguiendo la
 convención de
@@ -121,8 +124,8 @@ tmm/
 └── tests/           domain laws, plus a contract every method must pass
 ```
 
-Las entradas pequeñas colapsan `methods/` en un solo archivo. La regla que
-sobrevive en cualquiera de los dos casos es la dirección de la flecha: **las
+Una entrada lo bastante pequeña puede colapsar `methods/` en un solo archivo;
+ninguna lo ha necesitado todavía. La regla que sobrevive en cualquiera de los dos casos es la dirección de la flecha: **las
 ecuaciones nunca importan el algoritmo.** La recompensa es concreta — cambia el
 algoritmo, y toda ley física tiene que seguir cumpliéndose. Si se cumple, has
 separado lo que hace la naturaleza de cómo elegiste calcularlo. Si no, tenías
@@ -153,7 +156,7 @@ Auditado desde GitHub, decidido por contenido y no por nombre.
 |---|---|---|
 | [`Physics-simulations/Cristal_multicapa`](https://github.com/FullFran/Physics-simulations) | método de matrices, multicapa | **hecho** → [`tmm/`](tmm/) · fuente archivada |
 | `Physics-simulations/Iter_rad_material` | `rayosnew.py`, `unfoton.py` — fotones a través de una lámina absorbente | **hecho** → [`photon-transport/`](photon-transport/) |
-| `Physics-simulations/Magnetic Mirrors` | partícula cargada en una botella magnética | en cola — pusher de Boris a partir de la fuerza de Lorentz |
+| `Physics-simulations/Magnetic Mirrors` | partícula cargada en un campo *uniforme* — `B = (0,0,10)`, seis EDOs bajo `odeint`, sin botella y sin espejo | **descartada** — el contraste que merecía construirse era RK4 frente a Boris, no el título |
 | [`Optimization-Algorithms/4`](https://github.com/FullFran/Optimization-Algorithms) | `hopfiled.py`, Hopfield sobre fotos umbralizadas | **hecho** → [`hopfield/`](hopfield/) |
 | [`Point_classifier`](https://github.com/FullFran/Point_classifier) | `redNumpy.ipynb`, red en NumPy puro | **hecho** → [`mlp/`](mlp/) · fuente archivada |
 | `Tema-3-...alta-dimensionalidad` + `Optimization-Algorithms/3` | recocido simulado, genético, TSP — duplicado en dos repos | fusionar en una entrada |

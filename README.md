@@ -4,7 +4,8 @@ Minimal implementations, rebuilt from the equations.
 
 Every entry here exists to prove I understand a mechanism — not to compete
 with a production library. If you need a transfer matrix solver, install
-`tmm`. If you want to see whether I can derive one, read `tmm/core.py`.
+`tmm`. If you want to see whether I can derive one, read
+[`tmm/physics.py`](tmm/physics.py).
 
 This is also where my scattered didactic repos come to be rewritten. Course
 notebooks from 2023–2024 that were never readable get one honest version
@@ -53,7 +54,8 @@ A row only gets a mark when it is true today, not when it once was.
 
 ## Series
 
-The map is alphabetical and says nothing about what leads where. These do.
+The map is in the order the entries were built and says nothing about what
+leads where. These do.
 
 **Monte Carlo** — estimating by throwing darts, and the $1/\sqrt{N}$ it costs
 > [`photon-transport`](photon-transport/) → [`sampling`](sampling/)
@@ -70,9 +72,9 @@ The map is alphabetical and says nothing about what leads where. These do.
 **Waves in matter**
 > [`tmm`](tmm/)
 
-Notice `sampling` appears twice and `diffusion` twice. **That is the reason
-these are a view and not a directory tree.** Almost every entry belongs to two
-or three of these — `hopfield` is a neural network, a spin glass and an
+Notice `sampling` appears twice and `diffusion` three times. **That is the
+reason these are a view and not a directory tree.** Almost every entry belongs
+to two or three of these — `hopfield` is a neural network, a spin glass and an
 optimiser; `photon-transport` is Monte Carlo and radiation physics — and a
 folder forces one parent and hides the rest. The connection worth showing is
 often the one across the tree, not down it, which is the whole reason the same
@@ -96,10 +98,11 @@ in its own `docs/`: the derivations behind [`tmm/`](tmm/docs/physics.md),
 [`sampling/`](sampling/docs/distribution.md) and
 [`forest-fire/`](forest-fire/docs/lattice.md).
 
-Each of those carries a history section, because the people who got stuck on
-these problems are part of the explanation. Historical claims are marked **A**
-(documented, ideally primary), **B** (a reconstruction) or **C** (told
-everywhere and unsourced), following the convention of
+All of those except [`tmm/`](tmm/docs/physics.md) carry a history section,
+because the people who got stuck on these problems are part of the
+explanation. Historical claims are marked **A** (documented, ideally
+primary), **B** (a reconstruction) or **C** (told everywhere and
+unsourced), following the convention of
 [*La servilleta y el ordenador*](https://github.com/FullFran/la-servilleta-y-el-ordenador).
 
 ## Anatomy of an entry
@@ -115,12 +118,12 @@ tmm/
 └── tests/           domain laws, plus a contract every method must pass
 ```
 
-Small entries collapse `methods/` into a single file. The rule that survives
-either way is the direction of the arrow: **the equations never import the
-algorithm.** The payoff is concrete — swap the algorithm, and every physical
-law has to keep holding. If it does, you have separated what nature does from
-how you chose to compute it. If it does not, you had physics hiding inside
-your numerics and did not know.
+A small enough entry may collapse `methods/` into a single file; none has
+needed to yet. The rule that survives either way is the direction of the
+arrow: **the equations never import the algorithm.** The payoff is concrete —
+swap the algorithm, and every physical law has to keep holding. If it does,
+you have separated what nature does from how you chose to compute it. If it
+does not, you had physics hiding inside your numerics and did not know.
 
 The README answers five questions in order:
 
@@ -146,7 +149,7 @@ Audited from GitHub, decided by contents rather than by name.
 |---|---|---|
 | [`Physics-simulations/Cristal_multicapa`](https://github.com/FullFran/Physics-simulations) | matrix method, multilayer | **done** → [`tmm/`](tmm/) · source archived |
 | `Physics-simulations/Iter_rad_material` | `rayosnew.py`, `unfoton.py` — photons through an absorbing slab | **done** → [`photon-transport/`](photon-transport/) |
-| `Physics-simulations/Magnetic Mirrors` | charged particle in a magnetic bottle | queued — Boris pusher from the Lorentz force |
+| `Physics-simulations/Magnetic Mirrors` | charged particle in a *uniform* field — `B = (0,0,10)`, six ODEs under `odeint`, no bottle and no mirror | **declined** — the contrast worth building was RK4 vs Boris, not the title |
 | [`Optimization-Algorithms/4`](https://github.com/FullFran/Optimization-Algorithms) | `hopfiled.py`, Hopfield over thresholded photos | **done** → [`hopfield/`](hopfield/) |
 | [`Point_classifier`](https://github.com/FullFran/Point_classifier) | `redNumpy.ipynb`, net in pure NumPy | **done** → [`mlp/`](mlp/) · source archived |
 | `Tema-3-...alta-dimensionalidad` + `Optimization-Algorithms/3` | simulated annealing, genetic, TSP — duplicated across two repos | merge into one entry |
