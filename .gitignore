@@ -6,3 +6,6 @@ out/
 .engram/
 .atl/
 _site/
+
+# Claude Code personal settings (not for the repo)
+.claude/settings.local.json
