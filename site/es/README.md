@@ -1,4 +1,4 @@
-<!-- translated-from: 73a7ef9ea4b1 -->
+<!-- translated-from: df93ebaaad4c -->
 
 # first-principles
 
@@ -102,12 +102,12 @@ entrada vive dentro de ella, en su propio `docs/`: las derivaciones detrás de
 [`mlp/`](mlp/docs/model.md),
 [`photon-transport/`](photon-transport/docs/physics.md),
 [`sampling/`](sampling/docs/distribution.md) y
-[`forest-fire/`](forest-fire/docs/lattice.md) y
+[`forest-fire/`](forest-fire/docs/lattice.md),
+[`renormalisation/`](renormalisation/docs/flow.md) y
 [`diffusion/`](diffusion/docs/process.md).
 
-Todos ellos salvo [`tmm/`](tmm/docs/physics.md) llevan una sección de
-historia, porque las personas que se atascaron con estos problemas son parte
-de la explicación. Las afirmaciones
+Cada uno de ellos lleva una sección de historia, porque las personas que se
+atascaron con estos problemas son parte de la explicación. Las afirmaciones
 históricas se marcan **A** (documentada, idealmente primaria), **B** (una
 reconstrucción) o **C** (contada en todas partes y sin fuente), siguiendo la
 convención de

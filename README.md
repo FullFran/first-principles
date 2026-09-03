@@ -97,12 +97,12 @@ in its own `docs/`: the derivations behind [`tmm/`](tmm/docs/physics.md),
 [`hopfield/`](hopfield/docs/model.md), [`mlp/`](mlp/docs/model.md),
 [`photon-transport/`](photon-transport/docs/physics.md),
 [`sampling/`](sampling/docs/distribution.md),
-[`forest-fire/`](forest-fire/docs/lattice.md) and
+[`forest-fire/`](forest-fire/docs/lattice.md),
+[`renormalisation/`](renormalisation/docs/flow.md) and
 [`diffusion/`](diffusion/docs/process.md).
 
-All of those except [`tmm/`](tmm/docs/physics.md) carry a history section,
-because the people who got stuck on these problems are part of the
-explanation. Historical claims are marked **A** (documented, ideally
+Each of those carries a history section, because the people who got stuck on
+these problems are part of the explanation. Historical claims are marked **A** (documented, ideally
 primary), **B** (a reconstruction) or **C** (told everywhere and
 unsourced), following the convention of
 [*La servilleta y el ordenador*](https://github.com/FullFran/la-servilleta-y-el-ordenador).

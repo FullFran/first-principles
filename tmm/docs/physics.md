@@ -161,6 +161,78 @@ the thickness and index of a film to sub-nanometre precision. Ellipsometry is
 one of the most-used metrology techniques in semiconductor fabs, and the
 forward model inside it is exactly the one in this document.
 
+### 2.6 History
+
+::: **Dirty glass works better** ·
+*Verification: A — Rayleigh, Phil. Mag. (1886); the observation is repeated in
+every optical-coatings text and the mechanism is the one in section 7.1.*
+
+In 1886 Lord Rayleigh made a measurement that should have been a mistake. He
+compared fresh glass against old glass whose surface had tarnished with age,
+and found that **the tarnished glass transmitted more light**.
+
+A degraded surface outperforming a clean one is the kind of result you check
+three times before believing. The explanation is the whole of this document
+in one sentence: the tarnish is a thin film with an index between air and
+glass, and two weak reflections that arrive out of phase cancel better than
+one strong reflection does on its own.
+
+Nobody had been trying to reduce reflection. The effect turned up on its own,
+on neglected glass, and it took another fifty years for anyone to do it
+deliberately.
+
+::: **Forty-four layers of soap, and a film premiere** ·
+*Verification: A — Blodgett's 1938 patent and the Langmuir-Blodgett technique;
+the Gone With the Wind detail is well documented, and the "99%" is the figure
+GE published.*
+
+Katharine Burr Blodgett was the first woman to earn a physics PhD from
+Cambridge and the first woman hired as a scientist by General Electric's
+research laboratory. Working with Irving Langmuir on films one molecule
+thick, she realised that stacking them let her build a coating of any
+thickness she liked, to a precision no polishing process could reach.
+
+In 1938 she patented **non-reflecting glass: forty-four monolayers of soap**,
+about a quarter-wave of visible light, transmitting 99% where bare glass
+transmits 92%. The first major production to use it was *Gone With the Wind*
+in 1939, whose famously clean photography is in part an interference effect.
+
+The physics is the quarter-wave condition of section 8.1. The engineering was
+being able to lay down a film four thousand times thinner than a human hair
+and know how thick it was.
+
+::: **The recursion came first, and the matrices made it teachable** ·
+*Verification: A — Rouard, Ann. Phys. 11, 291 (1937); Abelès' 1949 doctoral
+thesis with the seminal paper in 1950; Born & Wolf's reformulation in the
+early 1950s. B for the claim that Born & Wolf are why the matrix form won,
+which is the standard account and a judgement rather than a record.*
+
+The two methods in section 7 arrived in the opposite order from the one a
+textbook implies.
+
+**Rouard, in 1937**, published the recursion: fold the stack one interface at
+a time, replacing everything below by a single effective reflectivity. It is
+the natural thing to write down if you are thinking about the physics, and it
+is `methods/recursion.py`.
+
+**Abelès, in his 1949 thesis and the 1950 paper**, gave each layer a
+$2\times2$ characteristic matrix and made the stack their product. That is
+`methods/transfer_matrix.py`, and it is where the name "transfer matrix
+method" comes from.
+
+Same physics, thirteen years apart. What the matrix form buys is not
+accuracy — section 7.4 measures both and they agree to the numerical ceiling
+— it is that a product of matrices is *composable*. You can reason about the
+stack algebraically, take its eigenvalues, and get the stopband formula of
+section 8.4 without computing anything. Born and Wolf reformulated it in the
+early 1950s and it has been the standard presentation since.
+
+There is a coda. When Lyman Parratt performed the first X-ray reflectometry
+experiment in 1954, he needed the same calculation and derived an equivalent
+recursion, apparently without reference to Rouard. The same physics is
+findable from two directions, seventeen years apart, in two fields that were
+not talking to each other.
+
 ### Papers worth reading
 
 | Reference | Why |

@@ -1,4 +1,4 @@
-<!-- translated-from: 9f0d83b7a3f0 -->
+<!-- translated-from: 7cb019137d2d -->
 
 # Luz a través de una pila de películas delgadas
 
@@ -170,6 +170,81 @@ el espesor y el índice de una película con precisión sub-nanométrica. La
 elipsometría es una de las técnicas de metrología más usadas en las fábricas de
 semiconductores, y el modelo directo que lleva dentro es exactamente el de este
 documento.
+
+### 2.6 Historia
+
+::: **El vidrio sucio funciona mejor** ·
+*Verificación: A — Rayleigh, Phil. Mag. (1886); la observación se repite en
+todo texto de recubrimientos ópticos y el mecanismo es el de la sección 7.1.*
+
+En 1886 Lord Rayleigh hizo una medida que debería haber sido un error. Comparó
+vidrio recién hecho contra vidrio viejo cuya superficie se había empañado con
+los años, y encontró que **el empañado transmitía más luz**.
+
+Una superficie degradada rindiendo más que una limpia es de esos resultados
+que compruebas tres veces antes de creértelos. La explicación es todo este
+documento en una frase: el empañado es una lámina delgada con un índice entre
+el del aire y el del vidrio, y dos reflexiones débiles que llegan en
+contrafase se cancelan mejor de lo que una reflexión fuerte se cancela sola.
+
+Nadie estaba intentando reducir la reflexión. El efecto apareció por su
+cuenta, sobre vidrio descuidado, y costó otros cincuenta años que alguien lo
+hiciera a propósito.
+
+::: **Cuarenta y cuatro capas de jabón, y un estreno de cine** ·
+*Verificación: A — la patente de Blodgett de 1938 y la técnica de
+Langmuir-Blodgett; el detalle de Lo que el viento se llevó está bien
+documentado, y el "99%" es la cifra que publicó GE.*
+
+Katharine Burr Blodgett fue la primera mujer en doctorarse en física por
+Cambridge y la primera contratada como científica por el laboratorio de
+investigación de General Electric. Trabajando con Irving Langmuir en películas
+de una molécula de grosor, se dio cuenta de que apilarlas le permitía
+construir un recubrimiento del grosor que quisiera, con una precisión que
+ningún proceso de pulido alcanzaba.
+
+En 1938 patentó el **vidrio no reflectante: cuarenta y cuatro monocapas de
+jabón**, aproximadamente un cuarto de onda de luz visible, transmitiendo un
+99% donde el vidrio desnudo transmite un 92%. La primera gran producción que
+lo usó fue *Lo que el viento se llevó*, en 1939, cuya fotografía célebremente
+limpia es en parte un efecto de interferencia.
+
+La física es la condición de cuarto de onda de la sección 8.1. La ingeniería
+fue poder depositar una película cuatro mil veces más fina que un cabello
+humano y saber cuánto medía.
+
+::: **La recursión llegó primero, y las matrices la hicieron enseñable** ·
+*Verificación: A — Rouard, Ann. Phys. 11, 291 (1937); la tesis doctoral de
+Abelès de 1949 con el artículo seminal en 1950; la reformulación de Born y
+Wolf a principios de los cincuenta. B para la afirmación de que Born y Wolf
+son la razón de que ganara la forma matricial, que es el relato estándar y un
+juicio más que un registro.*
+
+Los dos métodos de la sección 7 llegaron en el orden inverso al que un libro
+de texto da a entender.
+
+**Rouard, en 1937**, publicó la recursión: pliega la pila una interfaz cada
+vez, sustituyendo todo lo que hay debajo por una única reflectividad efectiva.
+Es lo natural de escribir si estás pensando en la física, y es
+`methods/recursion.py`.
+
+**Abelès, en su tesis de 1949 y el artículo de 1950**, dio a cada capa una
+matriz característica de $2\times2$ e hizo de la pila su producto. Eso es
+`methods/transfer_matrix.py`, y de ahí viene el nombre "método de la matriz de
+transferencia".
+
+La misma física, trece años de diferencia. Lo que compra la forma matricial no
+es precisión — la sección 7.4 mide las dos y coinciden hasta el techo numérico
+— es que un producto de matrices es *componible*. Puedes razonar sobre la pila
+algebraicamente, tomar sus autovalores, y obtener la fórmula de la banda
+prohibida de la sección 8.4 sin calcular nada. Born y Wolf la reformularon a
+principios de los cincuenta y desde entonces es la presentación estándar.
+
+Hay una coda. Cuando Lyman Parratt hizo el primer experimento de reflectometría
+de rayos X en 1954, necesitaba el mismo cálculo y derivó una recursión
+equivalente, aparentemente sin referencia a Rouard. La misma física es
+encontrable desde dos direcciones, con diecisiete años de diferencia, en dos
+campos que no se hablaban.
 
 ### Artículos que vale la pena leer
 

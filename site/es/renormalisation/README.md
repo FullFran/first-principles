@@ -1,4 +1,4 @@
-<!-- translated-from: 231fa815b4e1 -->
+<!-- translated-from: 3ccea90d28a2 -->
 
 # Renormalización
 
@@ -18,6 +18,8 @@ $2p^2 - p^4$, cuyo punto fijo es la razón áurea. 428 líneas de núcleo.
 ## Estructura
 
 ```
+docs/flow.md          the derivation, from the phenomenon down
+docs/figures/         the figures it argues from
 flow.py               the domain: the block rule, the map, its fixed points
 methods/
   enumeration.py      count every configuration — exact, and stops at b = 4
@@ -26,7 +28,6 @@ solve.py              the plain scheme, and the cell-to-cell one
 experiments/
   convergence.py      does a bigger block give a better answer? (half of one)
   noise.py            what the sampler's error bars actually are
-                      figures go to experiments/out/ until a derivation uses them
 tests/
   test_flow.py            domain laws, no scheme chosen
   test_methods.py         the contract, run against both

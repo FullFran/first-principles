@@ -29,7 +29,7 @@ import solve
 # experiments/out/ is scratch and gitignored. These move to docs/figures/
 # when a derivation argues from them, and not before -- an orphan
 # docs/ directory is the map claiming something that is not there.
-FIGURES = Path(__file__).resolve().parent / "out"
+FIGURES = Path(__file__).resolve().parents[1] / "docs" / "figures"
 SIZES = (2, 3, 4)
 INK, MEASURED, THEORY, WARN = "#1b1b1b", "#c0392b", "#2c3e50", "#e08a1e"
 plt.rcParams.update({
