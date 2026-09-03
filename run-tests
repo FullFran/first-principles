@@ -3,13 +3,26 @@
 #
 # They cannot share one: see conftest.py at the repo root. Entries are
 # discovered rather than listed, so a new one is picked up by existing.
+#
+# Discovery is by tests/, not by conftest.py, and the difference is the
+# whole point. conftest.py is what puts the entry root on sys.path; without
+# it pytest collects the files and every `import physics` resolves to
+# whichever entry got there first, or to nothing. Discovering by conftest.py
+# meant an entry built to the documented anatomy -- which did not mention
+# conftest.py -- was skipped in silence and the runner still exited 0. A
+# suite that is not run is not a suite that passes.
 set -e
 cd "$(dirname "$0")"
 
 status=0
-for entry in */conftest.py; do
-    entry=${entry%/conftest.py}
+for tests in */tests; do
+    entry=${tests%/tests}
     printf '\n=== %s ===\n' "$entry"
+    if [ ! -f "$entry/conftest.py" ]; then
+        printf 'no conftest.py: its imports would resolve into another entry\n'
+        status=1
+        continue
+    fi
     uv run pytest "$entry" "$@" || status=1
 done
 

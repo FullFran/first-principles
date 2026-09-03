@@ -115,7 +115,8 @@ tmm/
 ├── methods/         one file per algorithm, each importing the domain
 ├── solve.py         orchestration: validate, dispatch, convert
 ├── experiments/     things I ran and what they showed
-└── tests/           domain laws, plus a contract every method must pass
+├── tests/           domain laws, plus a contract every method must pass
+└── conftest.py      the entry root on sys.path, so the folder stands alone
 ```
 
 A small enough entry may collapse `methods/` into a single file; none has
