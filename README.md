@@ -45,6 +45,7 @@ each, or they stay archived where they are.
 | [Sampling an energy landscape](sampling/) | ✓ | ✓ | ✓ | new — the bridge the other three point at |
 | [Forest fire](forest-fire/) | ✓ | ✓ | ✓ | new — sibling of [`fire-percolation`](https://github.com/FullFran/fire-percolation) |
 | [Renormalisation](renormalisation/) | ✓ | ✓ | ✓ | new — acts on `forest-fire/` |
+| [Diffusion](diffusion/) | ✓ | ✓ | ✓ | new — where three of the series below converge |
 
 **L1 derive** — I can reconstruct it from the equations.
 **L2 implement** — I can write a minimal working version.
@@ -61,13 +62,13 @@ leads where. These do.
 > [`photon-transport`](photon-transport/) → [`sampling`](sampling/)
 
 **Energy landscapes** — remembering, optimising and sampling are all descent
-> [`hopfield`](hopfield/) → [`sampling`](sampling/) → *diffusion, not built*
+> [`hopfield`](hopfield/) → [`sampling`](sampling/) → [`diffusion`](diffusion/)
 
 **Learning a function** — gradients, and what you do once you have them
-> [`mlp`](mlp/) → *diffusion, not built*
+> [`mlp`](mlp/) → [`diffusion`](diffusion/)
 
 **Critical points** — thresholds, and why the details stop mattering there
-> [`forest-fire`](forest-fire/) → [`renormalisation`](renormalisation/) → *diffusion, not built*
+> [`forest-fire`](forest-fire/) → [`renormalisation`](renormalisation/) → [`diffusion`](diffusion/)
 
 **Waves in matter**
 > [`tmm`](tmm/)
@@ -188,6 +189,7 @@ uv run pytest photon-transport
 uv run pytest sampling
 uv run pytest forest-fire
 uv run pytest renormalisation
+uv run pytest diffusion
 ./run-tests                                        # all of them, one process each
 ```
 

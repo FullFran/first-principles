@@ -1,4 +1,4 @@
-<!-- translated-from: 98c0ff4a6e4f -->
+<!-- translated-from: 8106a5d59ae2 -->
 
 # first-principles
 
@@ -48,6 +48,7 @@ una versión honesta cada uno, o se quedan archivados donde están.
 | [Muestreo de un paisaje de energía](sampling/) | ✓ | ✓ | ✓ | nuevo — el puente al que apuntan los otros tres |
 | [Incendio forestal](forest-fire/) | ✓ | ✓ | ✓ | nuevo — hermano de [`fire-percolation`](https://github.com/FullFran/fire-percolation) |
 | [Renormalización](renormalisation/) | ✓ | ✓ | ✓ | nuevo — actúa sobre `forest-fire/` |
+| [Difusión](diffusion/) | ✓ | ✓ | ✓ | nuevo — donde convergen tres de las series de abajo |
 
 **L1 derivar** — puedo reconstruirlo desde las ecuaciones.
 **L2 implementar** — puedo escribir una versión mínima que funcione.
@@ -64,13 +65,13 @@ sobre qué lleva a qué. Estas sí.
 > [`photon-transport`](photon-transport/) → [`sampling`](sampling/)
 
 **Paisajes de energía** — recordar, optimizar y muestrear son todos descenso
-> [`hopfield`](hopfield/) → [`sampling`](sampling/) → *diffusion, sin construir*
+> [`hopfield`](hopfield/) → [`sampling`](sampling/) → [`diffusion`](diffusion/)
 
 **Aprender una función** — gradientes, y qué haces una vez los tienes
-> [`mlp`](mlp/) → *diffusion, sin construir*
+> [`mlp`](mlp/) → [`diffusion`](diffusion/)
 
 **Puntos críticos** — umbrales, y por qué los detalles dejan de importar ahí
-> [`forest-fire`](forest-fire/) → [`renormalisation`](renormalisation/) → *diffusion, sin construir*
+> [`forest-fire`](forest-fire/) → [`renormalisation`](renormalisation/) → [`diffusion`](diffusion/)
 
 **Ondas en la materia**
 > [`tmm`](tmm/)
@@ -194,6 +195,7 @@ uv run pytest photon-transport
 uv run pytest sampling
 uv run pytest forest-fire
 uv run pytest renormalisation
+uv run pytest diffusion
 ./run-tests                                        # all of them, one process each
 ```
 
