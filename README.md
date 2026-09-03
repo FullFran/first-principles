@@ -96,8 +96,9 @@ split](docs/architecture.md). Anything specific to one entry lives inside it,
 in its own `docs/`: the derivations behind [`tmm/`](tmm/docs/physics.md),
 [`hopfield/`](hopfield/docs/model.md), [`mlp/`](mlp/docs/model.md),
 [`photon-transport/`](photon-transport/docs/physics.md),
-[`sampling/`](sampling/docs/distribution.md) and
-[`forest-fire/`](forest-fire/docs/lattice.md).
+[`sampling/`](sampling/docs/distribution.md),
+[`forest-fire/`](forest-fire/docs/lattice.md) and
+[`diffusion/`](diffusion/docs/process.md).
 
 All of those except [`tmm/`](tmm/docs/physics.md) carry a history section,
 because the people who got stuck on these problems are part of the

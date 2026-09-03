@@ -18,13 +18,17 @@ computable. 505 lines of core.
 ## Layout
 
 ```
+docs/process.md       the derivation, from the phenomenon down
+docs/figures/         the figures it argues from
 process.py            the domain: noising, and the exact score it implies
 methods/
   ancestral.py        sample the reverse transition
   probability_flow.py integrate the flow with the same marginals
 solve.py              the schedule, the loop, and the verdict
 experiments/
+  collapse.py         what noising destroys, and what the score still knows
   step_budget.py      where the two methods separate, and where they stop
+  trajectories.py     the flow is the quantile transport map
 tests/
   test_process.py     the score, three independent ways
   test_methods.py     the contract: the samples are draws from the target
