@@ -1,0 +1,31 @@
+# Run every entry's suite.
+#
+# This existed nowhere until now, and that was a hole with a specific shape:
+# pages.yml enforces the website's honesty checks on every push, so a wrong
+# anchor blocked a deploy while a failing test did not block anything at all.
+# Meanwhile seven READMEs publish an exact test count as a claim about the
+# entry -- 217 for tmm, 71 for renormalisation -- and nothing was holding
+# them to it.
+#
+# One process per entry, because they cannot share one: entries are
+# standalone, more than one defines `solve` and `methods`, and on a shared
+# sys.path the first import wins silently. run-tests does that, and refuses
+# an entry whose conftest.py is missing rather than skipping it quietly.
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Every entry, one process each
+        run: ./run-tests
