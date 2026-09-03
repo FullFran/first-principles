@@ -4,6 +4,9 @@ Nothing here runs the model. If these fail the rules are wrong; if these pass
 and a method fails, the choice about how a fire finishes is wrong.
 """
 
+import ast
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -134,3 +137,38 @@ def test_a_lattice_smaller_than_two_is_rejected():
 def test_a_state_outside_the_three_is_rejected():
     with pytest.raises(ValueError, match="empty, a tree or on fire"):
         lat.check_grid(np.array([[0, 7]], dtype=np.int8))
+
+
+def test_the_domain_imports_no_method():
+    """Rule 7, checked instead of asserted.
+
+    Nothing else in this suite would notice a violation. The contract asks
+    whether every method obeys the domain, which is the other direction, and
+    an import written inside a function body does not even fail at
+    collection -- the domain can `import methods`, use it, and leave the
+    whole suite green.
+
+    Deliberately shallow: it reads the imports the parser can see, so a
+    module fetched through importlib at runtime would walk past it. It
+    catches the way the mistake actually gets made.
+    """
+    domain = Path(__file__).resolve().parent.parent / "lattice.py"
+
+    imported = []
+    for node in ast.walk(ast.parse(domain.read_text(encoding="utf-8"))):
+        if isinstance(node, ast.Import):
+            imported += [alias.name for alias in node.names]
+        elif isinstance(node, ast.ImportFrom):
+            if node.module:
+                imported.append(node.module)
+            else:  # from . import methods
+                imported += [alias.name for alias in node.names]
+
+    offenders = sorted(
+        name for name in imported
+        if name == "methods" or name.startswith("methods.")
+    )
+    assert not offenders, (
+        f"{domain.name} imports {offenders} -- the equations may not "
+        f"import the algorithm; the arrow only points the other way"
+    )
